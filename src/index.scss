@@ -1,13 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100..900&display=swap");
+
 :root {
   /* Primary Brand Colors */
-  --color-primary: #008060; // Shopify green (strong, recognizable)
-  --color-primary-dark: #005c47; // Darker green for hover/focus
-  --color-primary-light: #c8f2e0; // Light green background tint
+  --color-primary: #1db954; // Spotify green
+  --color-primary-dark: #1aa34a;
+  --color-primary-light: #1ed760;
+
+  /* Backgrounds */
+  --color-bg-main: #121212; // Main dark background
+  --color-bg-secondary: #181818; // Lighter dark section background
+  --color-bg-tertiary: #282828;
 
   /* Accent Colors */
   --color-accent: #5c6ac4; // Indigo-style accent
   --color-accent-light: #eef0fb; // Accent background
   --color-accent-dark: #3f4aa3;
+
+  /* Text Colors */
+  --color-text-primary: #ffffff; // Bright white text
+  --color-text-secondary: #b3b3b3; // Lighter gray for secondary text
+  --color-text-muted: #a7a7a7;
 
   /* Neutral Colors */
   --color-white: #ffffff;
@@ -33,9 +45,10 @@
   --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
   /* Typography */
-  --font-family: "Inter", sans-serif;
-  --font-size-base: 16px;
-  --line-height-base: 1.5;
+  --font-secondary: "Poppins", sans-serif;
+  --font-primary: "Roboto", sans-serif;
+  --font-thirdary: "Montserrat", sans-serif;
+  --font-fourthary: "Playfair Display", serif;
 }
 
 body {
@@ -59,12 +72,13 @@ a {
 
 .button {
   background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.75rem 1.25rem;
+  color: var(--color-text-primary);
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  font-weight: 600;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
   &:hover {
     background-color: var(--color-primary-dark);
