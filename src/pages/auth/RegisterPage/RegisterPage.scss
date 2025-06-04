@@ -1,0 +1,188 @@
+.register-container {
+  background: linear-gradient(var(--color-bg-main) 0%, var(--color-black) 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+
+  .register-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2.5rem;
+
+    .logo {
+      font-size: 3rem;
+      color: var(--color-primary);
+      margin-right: 1rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin: 0;
+      font-family: var(--font-fourthary);
+    }
+  }
+
+  .register-form {
+    background-color: var(--color-bg-secondary);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 550px;
+
+    h2 {
+      margin: 0 0 1.875rem;
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      font-family: var(--font-secondary);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+      }
+
+      input {
+        padding: 14px;
+        border: none;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--color-text-primary);
+        font-size: 16px;
+        transition: all 0.2s ease;
+        font-family: var(--font-primary);
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px var(--color-primary);
+          background-color: var(--color-gray-800);
+        }
+
+        &::placeholder {
+          color: var(--color-text-muted);
+        }
+      }
+
+      .hint {
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        margin-top: 0.5rem;
+        font-family: var(--font-primary);
+      }
+
+      .birth-date {
+        input {
+          padding: 0.75rem 0.875rem;
+        }
+      }
+
+      .gender-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.625rem;
+        margin-top: 0.625rem;
+
+        .gender-option {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          padding: 0.5rem 0.75rem;
+          border-radius: 0.25rem;
+          background-color: var(--color-bg-tertiary);
+          transition: all 0.2s ease;
+          font-family: var(--font-primary);
+
+          &:hover {
+            background-color: var(--color-gray-800);
+          }
+
+          input {
+            width: auto;
+            margin-right: 0.5rem;
+          }
+
+          span {
+            font-size: 0.875rem;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+
+    .terms {
+      margin: 1.875rem 0;
+      font-size: 0.6875rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      font-family: var(--font-primary);
+
+      a {
+        color: var(--color-text-primary);
+        text-decoration: underline;
+
+        &:hover {
+          color: var(--color-primary);
+        }
+      }
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background-color: var(--color-primary);
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.0625rem;
+      font-family: var(--font-secondary);
+
+      &:hover {
+        background-color: var(--color-primary-dark);
+        transform: scale(1.02);
+      }
+    }
+
+    .login-link {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      margin-top: 1.25rem;
+      font-family: var(--font-primary);
+
+      a {
+        color: var(--color-text-primary);
+        font-weight: 700;
+        margin-left: 0.3125rem;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--color-primary);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

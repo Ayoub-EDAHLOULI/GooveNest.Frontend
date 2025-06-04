@@ -4,7 +4,6 @@ import { FaSpotify } from "react-icons/fa";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -41,19 +40,6 @@ function LoginPage() {
 
         <div className="divider">
           <span>or</span>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
         </div>
 
         <div className="form-group">
