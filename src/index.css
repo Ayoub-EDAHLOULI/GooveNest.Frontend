@@ -1,11 +1,72 @@
 :root {
+  /* Primary Brand Colors */
+  --color-primary: #008060; // Shopify green (strong, recognizable)
+  --color-primary-dark: #005c47; // Darker green for hover/focus
+  --color-primary-light: #c8f2e0; // Light green background tint
+
+  /* Accent Colors */
+  --color-accent: #5c6ac4; // Indigo-style accent
+  --color-accent-light: #eef0fb; // Accent background
+  --color-accent-dark: #3f4aa3;
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-100: #f9f9f9;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #dddddd;
+  --color-gray-400: #cccccc;
+  --color-gray-500: #999999;
+  --color-gray-600: #666666;
+  --color-gray-700: #444444;
+  --color-gray-800: #333333;
+  --color-gray-900: #111111;
+
+  /* Status Colors */
+  --color-success: #008060;
+  --color-warning: #e0b800;
+  --color-error: #d72c0d;
+  --color-info: #2c6ecb;
+
+  /* Border & Shadow */
+  --border-radius: 0.5rem;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  /* Typography */
+  --font-family: "Inter", sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.5;
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #333;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-gray-800);
+  background-color: var(--color-white);
   margin: 0;
   padding: 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary-dark);
+  }
+}
+
+.button {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  font-weight: 600;
+
+  &:hover {
+    background-color: var(--color-primary-dark);
+  }
 }
