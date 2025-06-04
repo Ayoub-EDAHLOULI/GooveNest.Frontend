@@ -29,11 +29,11 @@ function RegisterPage() {
         <h2>Sign up for free to start listening.</h2>
 
         <div className="form-group">
-          <label htmlFor="displayName">What should we call you?</label>
+          <label htmlFor="username">What should we call you?</label>
           <input
             type="text"
-            name="displayName"
-            id="displayName"
+            name="username"
+            id="username"
             placeholder="Enter a profile name."
             value={formData.username}
             onChange={handleChange}
