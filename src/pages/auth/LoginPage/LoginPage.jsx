@@ -1,7 +1,11 @@
 import "./LoginPage.scss";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FaSpotify } from "react-icons/fa";
 import { validationLogin } from "../../../validations/validations";
+import { useDispatch } from "react-redux";
+import { login } from "../../../store/Actions/authActions";
+import { ToastContext } from "../../../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -12,6 +16,12 @@ function LoginPage() {
     email: "",
     password: "",
   });
+
+  const dispatch = useDispatch();
+
+  const { notify } = useContext(ToastContext);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +47,24 @@ function LoginPage() {
       setErrors(validation.errors);
       return;
     }
-    console.log("Login submitted:", formData);
+
+    // Dispatch the login action
+    dispatch(login(formData))
+      .then(() => {
+        notify("Login successful!", "success");
+
+        // Empty the form after successful login
+        setFormData({
+          email: "",
+          password: "",
+        });
+
+        // Optionally, redirect to the home page or dashboard
+        navigate("/");
+      })
+      .catch((error) => {
+        notify(error.message || "Invalid Email Or Password", "error");
+      });
   };
 
   return (

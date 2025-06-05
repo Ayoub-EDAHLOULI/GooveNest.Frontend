@@ -21,7 +21,13 @@ export const login = (credentials) => async (dispatch) => {
     });
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      const errorData = await response.json();
+      dispatch(
+        loginFailure({
+          error: errorData.message || "Login failed. Please try again.",
+        })
+      );
+      throw new Error(errorData.message || "An error occurred during login");
     }
 
     const data = await response.json();

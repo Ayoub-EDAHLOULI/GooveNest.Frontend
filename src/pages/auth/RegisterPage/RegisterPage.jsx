@@ -1,9 +1,10 @@
 import "./RegisterPage.scss";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FaSpotify } from "react-icons/fa";
 import { validationRegister } from "../../../validations/validations";
 import { useDispatch } from "react-redux";
 import { register } from "../../../store/Actions/authActions";
+import { ToastContext } from "../../../context/ToastContext";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ function RegisterPage() {
   const [errors, setErrors] = useState({});
 
   const dispatch = useDispatch();
+
+  const { notify } = useContext(ToastContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,11 +49,17 @@ function RegisterPage() {
     // Dispatch the register action
     dispatch(register(formData))
       .then(() => {
-        console.log("Registration successful");
+        notify("Registration successful!", "success");
+
+        // Empty the form after successful registration
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+        });
       })
       .catch((error) => {
-        console.error("Registration failed:", error);
-        // Handle registration failure (e.g., show an error message)
+        notify(error.message || "Registration failed", "error");
       });
   };
 

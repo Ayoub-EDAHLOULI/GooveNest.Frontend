@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,10 +23,6 @@ const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={{ notify }}>{children}</ToastContext.Provider>
   );
-};
-
-ToastProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export { ToastProvider, ToastContext };
