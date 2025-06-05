@@ -2,6 +2,8 @@ import "./RegisterPage.scss";
 import { useState } from "react";
 import { FaSpotify } from "react-icons/fa";
 import { validationRegister } from "../../../validations/validations";
+import { useDispatch } from "react-redux";
+import { register } from "../../../store/Actions/authActions";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,8 @@ function RegisterPage() {
     password: "",
   });
   const [errors, setErrors] = useState({});
+
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +43,15 @@ function RegisterPage() {
       return;
     }
 
-    console.log("Registration submitted:", formData);
+    // Dispatch the register action
+    dispatch(register(formData))
+      .then(() => {
+        console.log("Registration successful");
+      })
+      .catch((error) => {
+        console.error("Registration failed:", error);
+        // Handle registration failure (e.g., show an error message)
+      });
   };
 
   return (
