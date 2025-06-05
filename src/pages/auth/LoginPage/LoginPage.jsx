@@ -1,19 +1,42 @@
 import "./LoginPage.scss";
 import { useState } from "react";
 import { FaSpotify } from "react-icons/fa";
+import { validationLogin } from "../../../validations/validations";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    // Validate input on change
+    const validation = validationLogin({ ...formData, [name]: value });
+    if (!validation.valid) {
+      setErrors((prev) => ({ ...prev, [name]: validation.errors[name] }));
+    }
+    // Clear error for the current field if valid
+    if (validation.valid) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+    // Update form data
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate the entire form on submit
+    const validation = validationLogin(formData);
+    if (!validation.valid) {
+      setErrors(validation.errors);
+      return;
+    }
     console.log("Login submitted:", formData);
   };
 
@@ -48,11 +71,12 @@ function LoginPage() {
             type="text"
             name="email"
             id="email"
-            placeholder="Email address or username"
+            placeholder="Email address"
             value={formData.email}
             onChange={handleChange}
-            required
           />
+
+          {errors.email && <span className="error">{errors.email}</span>}
         </div>
 
         <div className="form-group">
@@ -64,8 +88,9 @@ function LoginPage() {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            required
           />
+
+          {errors.password && <span className="error">{errors.password}</span>}
         </div>
 
         <div className="remember-me">
