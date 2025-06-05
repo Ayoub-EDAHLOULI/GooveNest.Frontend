@@ -16,7 +16,6 @@ function RegisterPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Registration submitted:", formData);
-    // You can add Redux dispatch or API call here
   };
 
   return (
