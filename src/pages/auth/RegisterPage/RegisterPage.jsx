@@ -1,6 +1,7 @@
 import "./RegisterPage.scss";
 import { useState } from "react";
 import { FaSpotify } from "react-icons/fa";
+import { validationRegister } from "../../../validations/validations";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -8,13 +9,36 @@ function RegisterPage() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Validate input on change
+    const validation = validationRegister({ ...formData, [name]: value });
+    if (!validation.valid) {
+      setErrors((prev) => ({ ...prev, [name]: validation.errors[name] }));
+    }
+
+    // Clear error for the current field if valid
+    if (validation.valid) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    // Update form data
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate the entire form on submit
+    const validation = validationRegister(formData);
+    if (!validation.valid) {
+      setErrors(validation.errors);
+      return;
+    }
+
     console.log("Registration submitted:", formData);
   };
 
@@ -36,9 +60,10 @@ function RegisterPage() {
             placeholder="Enter a profile name."
             value={formData.username}
             onChange={handleChange}
-            required
           />
           <p className="hint">This appears on your profile.</p>
+
+          {errors.username && <p className="error">{errors.username}</p>}
         </div>
 
         <div className="form-group">
@@ -50,8 +75,9 @@ function RegisterPage() {
             placeholder="Enter your email."
             value={formData.email}
             onChange={handleChange}
-            required
           />
+
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
 
         <div className="form-group">
@@ -63,8 +89,9 @@ function RegisterPage() {
             placeholder="Create a password."
             value={formData.password}
             onChange={handleChange}
-            required
           />
+
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
         <div className="terms">

@@ -80,6 +80,12 @@
         }
       }
 
+      .error {
+        color: var(--color-error);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+
       .hint {
         font-size: 0.75rem;
         color: var(--color-text-secondary);
