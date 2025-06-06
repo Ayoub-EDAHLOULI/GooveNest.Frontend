@@ -33,6 +33,9 @@ export const login = (credentials) => async (dispatch) => {
     const data = await response.json();
     const userData = data.data;
     const token = data.data.token;
+    // Store user data and token in localStorage
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
     dispatch(loginSuccess({ user: userData, token: token }));
   } catch (error) {
     dispatch(

@@ -59,8 +59,16 @@ function LoginPage() {
           password: "",
         });
 
-        // Optionally, redirect to the home page or dashboard
-        navigate("/");
+        // Optionally, redirect based on user role
+        const user = JSON.parse(localStorage.getItem("user"));
+        const roleRedirectMap = {
+          ADMIN: "/admin",
+          ARTIST: "/artist",
+          LISTENER: "/account",
+        };
+
+        const role = user.role?.toUpperCase();
+        navigate(roleRedirectMap[role] || "/");
       })
       .catch((error) => {
         notify(error.message || "Invalid Email Or Password", "error");

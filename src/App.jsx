@@ -19,7 +19,7 @@ function App() {
         <Route
           path="/account"
           element={
-            <ProtectedRoute allowedRoles={["listener", "admin", "artist"]}>
+            <ProtectedRoute allowedRoles={["LISTENER", "ADMIN", "ARTIST"]}>
               <AccountPage />
             </ProtectedRoute>
           }
@@ -28,7 +28,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -37,7 +37,7 @@ function App() {
         <Route
           path="/artist"
           element={
-            <ProtectedRoute allowedRoles={["artist"]}>
+            <ProtectedRoute allowedRoles={["ARTIST"]}>
               <ArtistDashboard />
             </ProtectedRoute>
           }
