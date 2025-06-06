@@ -2,7 +2,10 @@ import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage/RegisterPage";
 import HomePage from "./pages/Dashboard/Home/HomePage";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AccountPage from "./pages/AccountPage/AccountPage";
+import AdminDashboard from "./pages/AdminDashboard/Main/MainAdminDashboard";
+import ArtistDashboard from "./pages/ArtistDashboard/Main/MainArtistDashboard";
 
 function App() {
   return (
@@ -11,7 +14,34 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="/account" element={<AccountPage />} />
+
+        {/* Protected Route Example */}
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute allowedRoles={["listener", "admin", "artist"]}>
+              <AccountPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/artist"
+          element={
+            <ProtectedRoute allowedRoles={["artist"]}>
+              <ArtistDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
