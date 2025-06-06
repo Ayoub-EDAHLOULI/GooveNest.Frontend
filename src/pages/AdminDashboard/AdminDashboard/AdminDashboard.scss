@@ -1,0 +1,131 @@
+.admin-dashboard {
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+    font-family: var(--font-secondary);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .stat-card {
+      background-color: var(--color-bg-tertiary);
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+
+      h3 {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-change {
+        font-size: 0.85rem;
+
+        &.up {
+          color: var(--color-primary);
+        }
+
+        &.down {
+          color: var(--color-error);
+        }
+      }
+    }
+  }
+
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+
+    @media (min-width: 992px) {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+      font-family: var(--font-secondary);
+    }
+  }
+
+  .recent-activities {
+    background-color: var(--color-bg-tertiary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-gray-700);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .user {
+          font-weight: 600;
+          color: var(--color-primary);
+        }
+
+        .action {
+          color: var(--color-text-secondary);
+        }
+
+        .time {
+          color: var(--color-text-muted);
+          font-size: 0.85rem;
+          margin-left: auto;
+        }
+      }
+    }
+  }
+
+  .quick-actions {
+    background-color: var(--color-bg-tertiary);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+
+      .action-btn {
+        background-color: var(--color-primary);
+        color: var(--color-text-primary);
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        text-align: center;
+
+        &:hover {
+          background-color: var(--color-primary-dark);
+        }
+      }
+    }
+  }
+}
