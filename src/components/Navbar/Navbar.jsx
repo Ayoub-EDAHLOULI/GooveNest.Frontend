@@ -7,6 +7,7 @@ import {
   FaSpotify,
 } from "react-icons/fa";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,10 +62,10 @@ function Navbar() {
             <button className="icon-button">
               <FaShoppingCart />
             </button>
-            <button className="user-button">
+            <Link to="/account" className="user-button">
               <FaUserCircle className="user-icon" />
               <span>Account</span>
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
