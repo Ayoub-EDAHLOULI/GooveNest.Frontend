@@ -70,6 +70,9 @@ const userSlice = createSlice({
       state.allUsers = state.allUsers.map((user) =>
         user.id === updatedUser.id ? updatedUser : user
       );
+      state.paginatedUsers = state.paginatedUsers.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user
+      );
       state.loading = false;
       state.error = null;
     },

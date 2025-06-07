@@ -168,6 +168,7 @@ export const updateUser = (userData) => async (dispatch) => {
 
     const updatedUser = await response.json();
     dispatch(updateUserSuccess(updatedUser.data));
+    return updatedUser.data;
   } catch (error) {
     dispatch(
       updateUserFailure({

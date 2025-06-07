@@ -1,10 +1,10 @@
-import "../Popup.scss";
+import "./Popup.scss";
 import { useState, useContext, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { createUser } from "../../../../../store/Actions/userActions";
-import { ToastContext } from "../../../../../context/ToastContext";
+import { createUser } from "../../../../store/Actions/userActions";
+import { ToastContext } from "../../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
-import { validationAddUser } from "../../../../../validations/validations";
+import { validationAddUser } from "../../../../validations/validations";
 
 export default function AddUserPopup({ closeModal }) {
   const [userData, setUserData] = useState({

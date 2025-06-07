@@ -7,22 +7,23 @@ import {
   FaUserShield,
   FaUser,
   FaSort,
-  FaSortUp,
-  FaSortDown,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPaginatedUsers } from "../../../store/Actions/userActions";
 import { getPrimaryRole } from "../../../utils/roleUtils";
-import AddUserPopup from "./Popups/AddUserPopup/AddUserPopup";
+import AddUserPopup from "./Popups/AddUserPopup";
+import UpdateUserPopup from "./Popups/UpdateUserPopup";
 import { updateUser } from "../../../store/Actions/userActions";
 import { ToastContext } from "../../../context/ToastContext";
 
 function UserManagement() {
+  const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddUserPopup, setShowAddUserPopup] = useState(false);
+  const [showUpdateUserPopup, setShowUpdateUserPopup] = useState(false);
 
   // Fetch users (replace with actual API call)
   const dispatch = useDispatch();
@@ -30,8 +31,6 @@ function UserManagement() {
   const totalUsers = useSelector((state) => state.user.totalUsers);
 
   const { notify } = useContext(ToastContext);
-
-  console.log("setSearchQuery", searchQuery);
 
   useEffect(() => {
     dispatch(fetchPaginatedUsers(currentPage, pageSize, searchQuery));
@@ -69,12 +68,6 @@ function UserManagement() {
           notify(error.message || "Failed to change user status", "error");
         });
     }
-  };
-
-  // Handle user actions
-  const handleEdit = (userId) => {
-    console.log("Edit user:", userId);
-    // Implement edit functionality
   };
 
   const handleDelete = (userId) => {
@@ -187,7 +180,11 @@ function UserManagement() {
               <div className="col actions">
                 <button
                   className="action-btn edit"
-                  onClick={() => handleEdit(user.id)}
+                  onClick={() => {
+                    // Open update user popup
+                    setShowUpdateUserPopup(true);
+                    setSelectedUser(user);
+                  }}
                 >
                   <FaEdit />
                 </button>
@@ -236,6 +233,14 @@ function UserManagement() {
       {/* Add User Popup */}
       {showAddUserPopup && (
         <AddUserPopup closeModal={() => setShowAddUserPopup(false)} />
+      )}
+
+      {/* Update User Popup */}
+      {showUpdateUserPopup && (
+        <UpdateUserPopup
+          user={selectedUser}
+          onClose={() => setShowUpdateUserPopup(false)}
+        />
       )}
     </div>
   );

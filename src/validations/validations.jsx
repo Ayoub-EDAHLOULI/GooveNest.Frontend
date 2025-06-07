@@ -90,3 +90,24 @@ export const validationAddUser = (data) => {
 
   return { valid, errors };
 };
+
+export const validationUpdateUser = (data) => {
+  let valid = true;
+  const errors = {};
+
+  // Username validation
+  if (data.userName && data.userName.trim() && data.userName.length < 3) {
+    errors.userName = "Username must be at least 3 characters.";
+    valid = false;
+  }
+
+  // Email validation
+  if (data.email && data.email.trim()) {
+    if (!/\S+@\S+\.\S+/.test(data.email.trim())) {
+      errors.email = "Email is invalid.";
+      valid = false;
+    }
+  }
+
+  return { valid, errors };
+};
