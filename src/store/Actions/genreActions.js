@@ -2,9 +2,6 @@ import {
   fetchAllGenresStart,
   fetchAllGenresSuccess,
   fetchAllGenresFailure,
-  fetchPaginatedGenresStart,
-  fetchPaginatedGenresSuccess,
-  fetchPaginatedGenresFailure,
   createGenreStart,
   createGenreSuccess,
   createGenreFailure,
@@ -51,54 +48,6 @@ export const fetchAllGenres = () => async (dispatch) => {
     );
   }
 };
-
-// Fetch paginated genres
-export const fetchPaginatedGenres =
-  (page = 1, pageSize = 10, searchQuery = "") =>
-  async (dispatch) => {
-    dispatch(fetchPaginatedGenresStart());
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}genre?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        dispatch(
-          fetchPaginatedGenresFailure({
-            error: errorData.message || "Failed to fetch paginated genres.",
-          })
-        );
-        throw new Error(
-          errorData.message ||
-            "An error occurred while fetching paginated genres"
-        );
-      }
-
-      const data = await response.json();
-      dispatch(
-        fetchPaginatedGenresSuccess({
-          genreData: data.data.paginatedGenres,
-          total: data.data.total || 0,
-        })
-      );
-    } catch (error) {
-      dispatch(
-        fetchPaginatedGenresFailure({
-          error:
-            error.message ||
-            "An error occurred while fetching paginated genres",
-        })
-      );
-    }
-  };
 
 // Create genre
 export const createGenre = (genreData) => async (dispatch) => {

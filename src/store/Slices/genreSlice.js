@@ -2,10 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   allGenres: [],
-  paginatedGenres: [],
   loading: false,
   error: null,
-  total: 0,
 };
 
 const genreSlice = createSlice({
@@ -26,23 +24,6 @@ const genreSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
-
-    // Fetch Paginated Genres
-    fetchPaginatedGenresStart(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchPaginatedGenresSuccess(state, action) {
-      state.paginatedGenres = action.payload.genreData || [];
-      state.total = action.payload.total || 0;
-      state.loading = false;
-      state.error = null;
-    },
-    fetchPaginatedGenresFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload.error;
-    },
-
     // Create Genre
     createGenreStart(state) {
       state.loading = true;
@@ -50,10 +31,8 @@ const genreSlice = createSlice({
     },
     createGenreSuccess(state, action) {
       state.allGenres.push(action.payload);
-      state.paginatedGenres.push(action.payload);
       state.loading = false;
       state.error = null;
-      state.total += 1; // Increment total count
     },
     createGenreFailure(state, action) {
       state.loading = false;
@@ -68,9 +47,6 @@ const genreSlice = createSlice({
     updateGenreSuccess(state, action) {
       const updatedGenre = action.payload;
       state.allGenres = state.allGenres.map((genre) =>
-        genre.id === updatedGenre.id ? updatedGenre : genre
-      );
-      state.paginatedGenres = state.paginatedGenres.map((genre) =>
         genre.id === updatedGenre.id ? updatedGenre : genre
       );
       state.loading = false;
@@ -91,12 +67,8 @@ const genreSlice = createSlice({
       state.allGenres = state.allGenres.filter(
         (genre) => genre.id !== deletedGenreId
       );
-      state.paginatedGenres = state.paginatedGenres.filter(
-        (genre) => genre.id !== deletedGenreId
-      );
       state.loading = false;
       state.error = null;
-      state.total -= 1; // Decrement total count
     },
     deleteGenreFailure(state, action) {
       state.loading = false;
@@ -109,9 +81,6 @@ export const {
   fetchAllGenresStart,
   fetchAllGenresSuccess,
   fetchAllGenresFailure,
-  fetchPaginatedGenresStart,
-  fetchPaginatedGenresSuccess,
-  fetchPaginatedGenresFailure,
   createGenreStart,
   createGenreSuccess,
   createGenreFailure,
