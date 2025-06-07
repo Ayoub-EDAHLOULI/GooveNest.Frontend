@@ -1,4 +1,4 @@
-.popup-overlay {
+.usermanagement-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -66,7 +66,7 @@
 
   label {
     display: block;
-    margin-bottom: 0.75rem;
+    margin: 0.75rem 0;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-text-primary);
@@ -94,6 +94,13 @@
   select {
     width: 100%;
     padding: 0.5rem 1rem;
+  }
+
+  .error {
+    display: block;
+    color: var(--color-error);
+    font-size: 0.875rem;
+    margin-top: -0.5rem;
   }
 }
 

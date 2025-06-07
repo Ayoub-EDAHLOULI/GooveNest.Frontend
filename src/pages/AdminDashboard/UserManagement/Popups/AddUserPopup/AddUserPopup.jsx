@@ -1,79 +1,102 @@
-// AddUserPopup.jsx
 import "../Popup.scss";
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { createUser } from "../../../../../store/Actions/userActions"; // adjust path
+import { createUser } from "../../../../../store/Actions/userActions";
 import { ToastContext } from "../../../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
+import { validationAddUser } from "../../../../../validations/validations";
 
 export default function AddUserPopup({ closeModal }) {
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [status, setStatus] = useState(0);
+  const [userData, setUserData] = useState({
+    userName: "",
+    email: "",
+    password: "",
+    status: 0,
+  });
+
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const { notify } = useContext(ToastContext);
 
+  const handleInputChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      const updatedData = { ...userData, [name]: value };
+      setUserData(updatedData);
+
+      const { errors: fieldErrors } = validationAddUser(updatedData);
+      setErrors(fieldErrors);
+    },
+    [userData]
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!userName.trim() || !email.trim() || !password.trim()) {
-      notify("All fields are required", "error");
+    const { valid, errors: validationErrors } = validationAddUser(userData);
+    if (!valid) {
+      setErrors(validationErrors);
       return;
     }
 
-    const user = { userName, email, password, status };
-
-    dispatch(createUser(user))
+    dispatch(createUser(userData))
       .then(() => {
         notify("User created successfully", "success");
         closeModal();
+
+        setUserData({
+          userName: "",
+          email: "",
+          password: "",
+          status: 0,
+        });
       })
-      .catch((err) => {
-        notify(err.message || "Failed to create user", "error");
+      .catch((error) => {
+        notify(error.message || "Failed to create user", "error");
       });
   };
 
+  const inputFields = [
+    { label: "Username", name: "userName", type: "text" },
+    { label: "Email", name: "email", type: "email" },
+    { label: "Password", name: "password", type: "password" },
+  ];
+
   return (
-    <div className="popup-overlay">
+    <div className="usermanagement-popup-overlay">
       <div className="popup-container">
         <div className="popup-header">
           <h3>Add New User</h3>
-          <button className="close-btn" onClick={closeModal}>
+          <button className="close-btn" onClick={closeModal} type="button">
             <FaTimes />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="popup-form">
-          <label>Username</label>
-          <input
-            type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
+        <form onSubmit={handleSubmit} className="popup-form" noValidate>
+          {inputFields.map(({ label, name, type }) => (
+            <div key={name} className="form-group">
+              <label htmlFor={name}>{label}</label>
+              <input
+                id={name}
+                name={name}
+                type={type}
+                value={userData[name]}
+                onChange={handleInputChange}
+              />
+              {errors[name] && <span className="error">{errors[name]}</span>}
+            </div>
+          ))}
 
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <label>Status</label>
+          <label htmlFor="status">Status</label>
           <select
-            value={status}
-            onChange={(e) => setStatus(Number(e.target.value))}
+            id="status"
+            name="status"
+            value={userData.status}
+            onChange={handleInputChange}
           >
             <option value={0}>Active</option>
             <option value={1}>Inactive</option>
           </select>
+          {errors.status && <span className="error">{errors.status}</span>}
 
           <div className="popup-actions">
             <button type="submit" className="save-btn">
