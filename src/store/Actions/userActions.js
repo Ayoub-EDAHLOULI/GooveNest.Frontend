@@ -59,7 +59,7 @@ export const fetchPaginatedUsers =
     dispatch(fetchPaginatedUsersStart());
     try {
       const response = await fetch(
-        `${API_BASE_URL}user/paginated?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
+        `${API_BASE_URL}user?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
         {
           method: "GET",
           credentials: "include",
