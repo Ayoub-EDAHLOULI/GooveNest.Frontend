@@ -128,14 +128,16 @@ export const createUser = (userData) => async (dispatch) => {
       );
     }
 
-    const data = await response.json();
-    dispatch(createUserSuccess(data.data));
+    const newUser = await response.json();
+    dispatch(createUserSuccess(newUser.data));
   } catch (error) {
     dispatch(
       createUserFailure({
         error: error.message || "An error occurred while creating user",
       })
     );
+
+    throw new Error(error.message || "An error occurred while creating user");
   }
 };
 
@@ -164,13 +166,52 @@ export const updateUser = (userData) => async (dispatch) => {
       );
     }
 
-    const data = await response.json();
-    dispatch(updateUserSuccess(data.data));
+    const updatedUser = await response.json();
+    dispatch(updateUserSuccess(updatedUser.data));
   } catch (error) {
     dispatch(
       updateUserFailure({
         error: error.message || "An error occurred while updating user",
       })
     );
+
+    throw new Error(error.message || "An error occurred while updating user");
+  }
+};
+
+// Delete user
+export const deleteUser = (userId) => async (dispatch) => {
+  dispatch(deleteUserStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}user/${userId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteUserFailure({
+          error: errorData.message || "Failed to delete user.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while deleting user"
+      );
+    }
+
+    const deletedUser = await response.json();
+    dispatch(deleteUserSuccess({ id: deletedUser.data.id }));
+  } catch (error) {
+    dispatch(
+      deleteUserFailure({
+        error: error.message || "An error occurred while deleting user",
+      })
+    );
+
+    throw new Error(error.message || "An error occurred while deleting user");
   }
 };
