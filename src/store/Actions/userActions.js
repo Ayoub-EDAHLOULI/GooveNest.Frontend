@@ -138,3 +138,39 @@ export const createUser = (userData) => async (dispatch) => {
     );
   }
 };
+
+// Update user
+export const updateUser = (userData) => async (dispatch) => {
+  dispatch(updateUserStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}user/${userData.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        updateUserFailure({
+          error: errorData.message || "Failed to update user.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while updating user"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(updateUserSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      updateUserFailure({
+        error: error.message || "An error occurred while updating user",
+      })
+    );
+  }
+};
