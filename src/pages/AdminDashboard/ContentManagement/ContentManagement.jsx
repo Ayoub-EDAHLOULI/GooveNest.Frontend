@@ -15,11 +15,13 @@ import {
   createGenre,
 } from "../../../store/Actions/genreActions";
 import { ToastContext } from "../../../context/ToastContext";
+import UpdateGenrePopup from "./Popups/update/UpdateGenrePopup";
 
 function ContentManagement() {
   const [activeTab, setActiveTab] = useState("tracks");
   const [searchQuery, setSearchQuery] = useState("");
   const [newGenre, setNewGenre] = useState({ name: "" });
+  const [updateGenre, setUpdateGenre] = useState(null);
 
   const { notify } = useContext(ToastContext);
 
@@ -239,7 +241,10 @@ function ContentManagement() {
                     </span>
                   </div>
                   <div className="genre-actions">
-                    <button className="action-btn edit">
+                    <button
+                      className="action-btn edit"
+                      onClick={() => setUpdateGenre(genre)}
+                    >
                       <FaEdit />
                     </button>
                     <button
@@ -255,6 +260,13 @@ function ContentManagement() {
               <div className="no-results">No genres found</div>
             )}
           </div>
+
+          {updateGenre && (
+            <UpdateGenrePopup
+              genre={updateGenre}
+              onClose={() => setUpdateGenre(null)}
+            />
+          )}
         </div>
       )}
 

@@ -119,6 +119,8 @@ export const updateGenre = (genreData) => async (dispatch) => {
         error: error.message || "An error occurred while updating genre",
       })
     );
+
+    throw new Error(error.message || "An error occurred while updating genre");
   }
 };
 
