@@ -12,7 +12,8 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPaginatedUsers } from "../../../store/Actions/userActions";
-import { getPrimaryRole } from "../../../utils/roleUtils"; // Assuming you have a utility function to get primary role
+import { getPrimaryRole } from "../../../utils/roleUtils";
+import AddUserPopup from "./Popups/AddUserPopup/AddUserPopup";
 
 function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +21,7 @@ function UserManagement() {
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showAddUserPopup, setShowAddUserPopup] = useState(false);
 
   // Fetch users (replace with actual API call)
   const dispatch = useDispatch();
@@ -76,7 +78,7 @@ function UserManagement() {
           </select>
           <button
             className="add-user-btn"
-            onClick={() => console.log("Add new user")}
+            onClick={() => setShowAddUserPopup(true)}
           >
             Add User
           </button>
@@ -190,6 +192,11 @@ function UserManagement() {
           Next
         </button>
       </div>
+
+      {/* Add User Popup */}
+      {showAddUserPopup && (
+        <AddUserPopup closeModal={() => setShowAddUserPopup(false)} />
+      )}
     </div>
   );
 }
