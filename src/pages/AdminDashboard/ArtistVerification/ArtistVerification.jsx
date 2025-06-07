@@ -1,4 +1,4 @@
-import React from "react";
+import './ArtistVerification.scss'
 
 function ArtistVerification() {
   return <div>ArtistVerification</div>;
