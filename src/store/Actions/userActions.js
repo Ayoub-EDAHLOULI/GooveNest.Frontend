@@ -83,7 +83,12 @@ export const fetchPaginatedUsers =
       }
 
       const data = await response.json();
-      dispatch(fetchPaginatedUsersSuccess(data));
+      dispatch(
+        fetchPaginatedUsersSuccess({
+          userData: data.data.paginatedUsers,
+          total: data.data.totalUsers,
+        })
+      );
     } catch (error) {
       dispatch(
         fetchPaginatedUsersFailure({
@@ -97,3 +102,39 @@ export const fetchPaginatedUsers =
       );
     }
   };
+
+// Create user
+export const createUser = (userData) => async (dispatch) => {
+  dispatch(createUserStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}user`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        createUserFailure({
+          error: errorData.message || "Failed to create user.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while creating user"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(createUserSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      createUserFailure({
+        error: error.message || "An error occurred while creating user",
+      })
+    );
+  }
+};
