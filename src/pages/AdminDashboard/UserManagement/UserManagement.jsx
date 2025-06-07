@@ -63,9 +63,7 @@ function UserManagement() {
             "success"
           );
           // Optionally, refresh the user list
-          dispatch(
-            fetchPaginatedUsers(currentPage, pageSize, searchQuery, searchTerm)
-          );
+          dispatch(fetchPaginatedUsers(currentPage, pageSize, searchQuery));
         })
         .catch((error) => {
           notify(error.message || "Failed to change user status", "error");
@@ -100,6 +98,18 @@ function UserManagement() {
         </div>
 
         <div className="filters">
+          <select
+            id="pageSize"
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
