@@ -13,8 +13,9 @@ import { fetchPaginatedUsers } from "../../../store/Actions/userActions";
 import { getPrimaryRole } from "../../../utils/roleUtils";
 import AddUserPopup from "./Popups/AddUserPopup";
 import UpdateUserPopup from "./Popups/UpdateUserPopup";
-import { updateUser } from "../../../store/Actions/userActions";
+import { updateUser, deleteUser } from "../../../store/Actions/userActions";
 import { ToastContext } from "../../../context/ToastContext";
+import Swal from "sweetalert2";
 
 function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -71,8 +72,34 @@ function UserManagement() {
   };
 
   const handleDelete = (userId) => {
-    console.log("Delete user:", userId);
-    // Implement delete functionality
+    console.log("Deleting user with ID:", userId);
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteUser(userId))
+          .then(() => {
+            notify("User deleted successfully", "success");
+
+            // If after deletion, current page becomes empty and not on first page, go back one page
+            if (filteredUsers.length === 1 && currentPage > 1) {
+              setCurrentPage((prev) => Math.max(prev - 1, 1));
+            }
+          })
+          .catch((error) => {
+            notify(error.message || "Failed to delete user", "error");
+          });
+      }
+    });
   };
 
   return (

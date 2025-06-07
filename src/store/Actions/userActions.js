@@ -203,9 +203,7 @@ export const deleteUser = (userId) => async (dispatch) => {
         errorData.message || "An error occurred while deleting user"
       );
     }
-
-    const deletedUser = await response.json();
-    dispatch(deleteUserSuccess({ id: deletedUser.data.id }));
+    dispatch(deleteUserSuccess(userId));
   } catch (error) {
     dispatch(
       deleteUserFailure({
