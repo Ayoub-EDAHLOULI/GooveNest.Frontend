@@ -171,3 +171,37 @@ export const updateGenre = (genreData) => async (dispatch) => {
     );
   }
 };
+
+// Delete genre
+export const deleteGenre = (genreId) => async (dispatch) => {
+  dispatch(deleteGenreStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}genre/${genreId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteGenreFailure({
+          error: errorData.message || "Failed to delete genre.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while deleting genre"
+      );
+    }
+
+    dispatch(deleteGenreSuccess({ id: genreId }));
+  } catch (error) {
+    dispatch(
+      deleteGenreFailure({
+        error: error.message || "An error occurred while deleting genre",
+      })
+    );
+  }
+};
