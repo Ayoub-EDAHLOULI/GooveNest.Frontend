@@ -125,12 +125,48 @@ export const createGenre = (genreData) => async (dispatch) => {
       );
     }
 
-    const data = await response.json();
-    dispatch(createGenreSuccess(data.data));
+    const newGenre = await response.json();
+    dispatch(createGenreSuccess(newGenre.data));
   } catch (error) {
     dispatch(
       createGenreFailure({
         error: error.message || "An error occurred while creating genre",
+      })
+    );
+  }
+};
+
+// Update genre
+export const updateGenre = (genreData) => async (dispatch) => {
+  dispatch(updateGenreStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}genre/${genreData.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(genreData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        updateGenreFailure({
+          error: errorData.message || "Failed to update genre.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while updating genre"
+      );
+    }
+
+    const updatedGenre = await response.json();
+    dispatch(updateGenreSuccess(updatedGenre.data));
+  } catch (error) {
+    dispatch(
+      updateGenreFailure({
+        error: error.message || "An error occurred while updating genre",
       })
     );
   }
