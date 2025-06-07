@@ -51,3 +51,49 @@ export const fetchAllUsers = () => async (dispatch) => {
     );
   }
 };
+
+// Fetch paginated users
+export const fetchPaginatedUsers =
+  (page = 1, pageSize = 10, searchQuery = "") =>
+  async (dispatch) => {
+    dispatch(fetchPaginatedUsersStart());
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}user/paginated?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        dispatch(
+          fetchPaginatedUsersFailure({
+            error: errorData.message || "Failed to fetch paginated users.",
+          })
+        );
+        throw new Error(
+          errorData.message ||
+            "An error occurred while fetching paginated users"
+        );
+      }
+
+      const data = await response.json();
+      dispatch(fetchPaginatedUsersSuccess(data));
+    } catch (error) {
+      dispatch(
+        fetchPaginatedUsersFailure({
+          error:
+            error.message || "An error occurred while fetching paginated users",
+        })
+      );
+
+      throw new Error(
+        error.message || "An error occurred while fetching paginated users"
+      );
+    }
+  };
