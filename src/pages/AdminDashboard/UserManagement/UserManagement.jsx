@@ -17,7 +17,8 @@ import { getPrimaryRole } from "../../../utils/roleUtils"; // Assuming you have 
 function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   // Fetch users (replace with actual API call)
@@ -29,8 +30,8 @@ function UserManagement() {
   console.log("Users:", users);
 
   useEffect(() => {
-    dispatch(fetchPaginatedUsers(currentPage, usersPerPage, searchTerm));
-  }, [dispatch, currentPage, usersPerPage, searchTerm]);
+    dispatch(fetchPaginatedUsers(currentPage, pageSize, searchQuery));
+  }, [dispatch, currentPage, pageSize, searchTerm, searchQuery]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -73,6 +74,12 @@ function UserManagement() {
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
+          <button
+            className="add-user-btn"
+            onClick={() => console.log("Add new user")}
+          >
+            Add User
+          </button>
         </div>
       </div>
 
@@ -164,6 +171,24 @@ function UserManagement() {
             No users found matching your criteria
           </div>
         )}
+      </div>
+
+      <div className="pagination">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {Math.ceil(totalUsers / pageSize)}
+        </span>
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={currentPage * pageSize >= totalUsers}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

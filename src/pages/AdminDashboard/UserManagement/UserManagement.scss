@@ -45,6 +45,10 @@
     }
 
     .filters {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
       select {
         background-color: var(--color-bg-tertiary);
         border: 1px solid var(--color-gray-700);
@@ -57,6 +61,26 @@
         &:focus {
           outline: none;
           border-color: var(--color-primary);
+        }
+      }
+
+      .add-user-btn {
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-family: var(--font-primary);
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: var(--color-primary-dark);
+        }
+
+        svg {
+          margin-right: 0.5rem;
+          font-size: 1rem;
         }
       }
     }
@@ -227,7 +251,8 @@
   .pagination {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem;
 
     button {
@@ -255,13 +280,6 @@
         border-color: var(--color-primary);
       }
     }
-  }
-
-  .table-footer {
-    text-align: center;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
   }
 }
 
