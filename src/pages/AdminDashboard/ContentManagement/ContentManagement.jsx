@@ -1,5 +1,5 @@
 import "./ContentManagement.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaSearch,
   FaPlus,
@@ -9,10 +9,22 @@ import {
   FaUser,
   FaSlidersH,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllGenres } from "../../../store/Actions/genreActions";
 
 function ContentManagement() {
   const [activeTab, setActiveTab] = useState("tracks");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const dispatch = useDispatch();
+  const genres = useSelector((state) => state.genre.allGenres || []);
+
+  console.log("Genres:", genres);
+
+  // Fetch genres on component mount
+  useEffect(() => {
+    dispatch(fetchAllGenres());
+  }, [dispatch]);
 
   // Mock data - replace with API calls
   const [tracks, setTracks] = useState([
@@ -50,14 +62,6 @@ function ContentManagement() {
     },
   ]);
 
-  const [genres, setGenres] = useState([
-    { id: 1, name: "Pop", trackCount: 1245 },
-    { id: 2, name: "Rock", trackCount: 876 },
-    { id: 3, name: "Hip Hop", trackCount: 1543 },
-    { id: 4, name: "Electronic", trackCount: 2032 },
-    { id: 5, name: "Classical", trackCount: 432 },
-  ]);
-
   const [newGenre, setNewGenre] = useState("");
 
   const handleDeleteTrack = (id) => {
@@ -77,19 +81,19 @@ function ContentManagement() {
     );
   };
 
-  const handleAddGenre = () => {
-    if (newGenre.trim()) {
-      setGenres([
-        ...genres,
-        { id: genres.length + 1, name: newGenre, trackCount: 0 },
-      ]);
-      setNewGenre("");
-    }
-  };
+  // const handleAddGenre = () => {
+  //   if (newGenre.trim()) {
+  //     setGenres([
+  //       ...genres,
+  //       { id: genres.length + 1, name: newGenre, trackCount: 0 },
+  //     ]);
+  //     setNewGenre("");
+  //   }
+  // };
 
-  const handleDeleteGenre = (id) => {
-    setGenres(genres.filter((genre) => genre.id !== id));
-  };
+  // const handleDeleteGenre = (id) => {
+  //   setGenres(genres.filter((genre) => genre.id !== id));
+  // };
 
   const filteredTracks = tracks.filter(
     (track) =>
@@ -208,7 +212,7 @@ function ContentManagement() {
                 value={newGenre}
                 onChange={(e) => setNewGenre(e.target.value)}
               />
-              <button className="add-btn" onClick={handleAddGenre}>
+              <button className="add-btn">
                 <FaPlus /> Add
               </button>
             </div>
@@ -230,7 +234,7 @@ function ContentManagement() {
                     </button>
                     <button
                       className="action-btn delete"
-                      onClick={() => handleDeleteGenre(genre.id)}
+                      onClick={() => console.log(`Delete genre ${genre.id}`)}
                     >
                       <FaTrash />
                     </button>
