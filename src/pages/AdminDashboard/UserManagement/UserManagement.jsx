@@ -18,7 +18,6 @@ import { updateUser } from "../../../store/Actions/userActions";
 import { ToastContext } from "../../../context/ToastContext";
 
 function UserManagement() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,14 +31,11 @@ function UserManagement() {
 
   const { notify } = useContext(ToastContext);
 
-  console.log("Total Users:", totalUsers);
-  console.log("Users:", users);
+  console.log("setSearchQuery", searchQuery);
 
   useEffect(() => {
-    dispatch(
-      fetchPaginatedUsers(currentPage, pageSize, searchQuery, searchTerm)
-    );
-  }, [dispatch, currentPage, pageSize, searchTerm, searchQuery]);
+    dispatch(fetchPaginatedUsers(currentPage, pageSize, searchQuery));
+  }, [dispatch, currentPage, pageSize, searchQuery]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -98,8 +94,8 @@ function UserManagement() {
           <input
             type="text"
             placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
