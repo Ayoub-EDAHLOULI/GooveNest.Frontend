@@ -1,5 +1,5 @@
 import "./UserManagement.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   FaSearch,
   FaEdit,
@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPaginatedUsers } from "../../../store/Actions/userActions";
 import { getPrimaryRole } from "../../../utils/roleUtils";
 import AddUserPopup from "./Popups/AddUserPopup/AddUserPopup";
+import { updateUser } from "../../../store/Actions/userActions";
+import { ToastContext } from "../../../context/ToastContext";
 
 function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,17 +30,45 @@ function UserManagement() {
   const users = useSelector((state) => state.user.paginatedUsers);
   const totalUsers = useSelector((state) => state.user.totalUsers);
 
+  const { notify } = useContext(ToastContext);
+
   console.log("Total Users:", totalUsers);
   console.log("Users:", users);
 
   useEffect(() => {
-    dispatch(fetchPaginatedUsers(currentPage, pageSize, searchQuery));
+    dispatch(
+      fetchPaginatedUsers(currentPage, pageSize, searchQuery, searchTerm)
+    );
   }, [dispatch, currentPage, pageSize, searchTerm, searchQuery]);
 
   // Format date
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Change user status
+  const changeStatus = (userId) => {
+    const user = users.find((user) => user.id === userId);
+    if (user) {
+      const updatedStatus = user.status === 0 ? 1 : 0; // Toggle status
+      dispatch(updateUser({ id: user.id, status: updatedStatus }))
+        .then(() => {
+          notify(
+            `User ${
+              updatedStatus === 0 ? "activated" : "deactivated"
+            } successfully`,
+            "success"
+          );
+          // Optionally, refresh the user list
+          dispatch(
+            fetchPaginatedUsers(currentPage, pageSize, searchQuery, searchTerm)
+          );
+        })
+        .catch((error) => {
+          notify(error.message || "Failed to change user status", "error");
+        });
+    }
   };
 
   // Handle user actions
@@ -151,13 +181,11 @@ function UserManagement() {
                 </button>
                 <button
                   className={`action-btn toggle-status ${
-                    user.status === "active" ? "deactivate" : "activate"
+                    user.status === 1 ? "deactivate" : "activate"
                   }`}
-                  onClick={() =>
-                    console.log("Toggle status for user:", user.id)
-                  }
+                  onClick={() => changeStatus(user.id)}
                 >
-                  {user.status === "active" ? "Deactivate" : "Activate"}
+                  {user.status === 1 ? "Deactivate" : "Activate"}
                 </button>
                 <button
                   className="action-btn delete"
