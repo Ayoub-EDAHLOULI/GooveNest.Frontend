@@ -13,9 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllGenres,
   createGenre,
+  deleteGenre,
 } from "../../../store/Actions/genreActions";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateGenrePopup from "./Popups/update/UpdateGenrePopup";
+
+import Swal from "sweetalert2";
 
 function ContentManagement() {
   const [activeTab, setActiveTab] = useState("tracks");
@@ -103,9 +106,28 @@ function ContentManagement() {
       });
   };
 
-  // const handleDeleteGenre = (id) => {
-  //   setGenres(genres.filter((genre) => genre.id !== id));
-  // };
+  const handleDeleteGenre = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteGenre(id))
+          .then(() => {
+            notify("Genre deleted successfully", "success");
+          })
+          .catch((error) => {
+            notify(error.message || "Failed to delete genre", "error");
+          });
+      }
+    });
+  };
 
   const filteredTracks = tracks.filter(
     (track) =>
@@ -249,7 +271,7 @@ function ContentManagement() {
                     </button>
                     <button
                       className="action-btn delete"
-                      onClick={() => console.log(`Delete genre ${genre.id}`)}
+                      onClick={() => handleDeleteGenre(genre.id)}
                     >
                       <FaTrash />
                     </button>

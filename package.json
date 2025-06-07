@@ -17,7 +17,8 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
-    "sass": "^1.89.1"
+    "sass": "^1.89.1",
+    "sweetalert2": "^11.22.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
