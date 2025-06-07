@@ -18,7 +18,7 @@ import { API_BASE_URL } from "../../config";
 export const fetchAllGenres = () => async (dispatch) => {
   dispatch(fetchAllGenresStart());
   try {
-    const response = await fetch(`${API_BASE_URL}genre`, {
+    const response = await fetch(`${API_BASE_URL}genre/all`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -82,6 +82,7 @@ export const createGenre = (genreData) => async (dispatch) => {
         error: error.message || "An error occurred while creating genre",
       })
     );
+    throw new Error(error.message || "An error occurred while creating genre");
   }
 };
 

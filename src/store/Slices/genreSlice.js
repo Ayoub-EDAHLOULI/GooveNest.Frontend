@@ -16,7 +16,7 @@ const genreSlice = createSlice({
       state.error = null;
     },
     fetchAllGenresSuccess(state, action) {
-      state.allGenres = action.payload.genreData || [];
+      state.allGenres = action.payload || [];
       state.loading = false;
       state.error = null;
     },

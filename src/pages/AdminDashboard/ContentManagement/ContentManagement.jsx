@@ -1,5 +1,5 @@
 import "./ContentManagement.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   FaSearch,
   FaPlus,
@@ -10,16 +10,21 @@ import {
   FaSlidersH,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllGenres } from "../../../store/Actions/genreActions";
+import {
+  fetchAllGenres,
+  createGenre,
+} from "../../../store/Actions/genreActions";
+import { ToastContext } from "../../../context/ToastContext";
 
 function ContentManagement() {
   const [activeTab, setActiveTab] = useState("tracks");
   const [searchQuery, setSearchQuery] = useState("");
+  const [newGenre, setNewGenre] = useState({ name: "" });
+
+  const { notify } = useContext(ToastContext);
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
-
-  console.log("Genres:", genres);
 
   // Fetch genres on component mount
   useEffect(() => {
@@ -62,8 +67,6 @@ function ContentManagement() {
     },
   ]);
 
-  const [newGenre, setNewGenre] = useState("");
-
   const handleDeleteTrack = (id) => {
     setTracks(tracks.filter((track) => track.id !== id));
   };
@@ -81,15 +84,22 @@ function ContentManagement() {
     );
   };
 
-  // const handleAddGenre = () => {
-  //   if (newGenre.trim()) {
-  //     setGenres([
-  //       ...genres,
-  //       { id: genres.length + 1, name: newGenre, trackCount: 0 },
-  //     ]);
-  //     setNewGenre("");
-  //   }
-  // };
+  const handleAddGenre = () => {
+    if (!newGenre.name.trim()) {
+      notify("Genre name cannot be empty", "error");
+      return;
+    }
+
+    dispatch(createGenre(newGenre))
+      .then(() => {
+        notify("Genre added successfully!", "success");
+
+        setNewGenre({ name: "" }); // Reset input field
+      })
+      .catch((error) => {
+        notify(error.message || "Failed to add genre", "error");
+      });
+  };
 
   // const handleDeleteGenre = (id) => {
   //   setGenres(genres.filter((genre) => genre.id !== id));
@@ -209,10 +219,10 @@ function ContentManagement() {
               <input
                 type="text"
                 placeholder="New genre name"
-                value={newGenre}
-                onChange={(e) => setNewGenre(e.target.value)}
+                value={newGenre.name}
+                onChange={(e) => setNewGenre({ name: e.target.value })}
               />
-              <button className="add-btn">
+              <button className="add-btn" onClick={() => handleAddGenre()}>
                 <FaPlus /> Add
               </button>
             </div>
