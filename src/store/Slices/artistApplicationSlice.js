@@ -60,8 +60,10 @@ const artistApplicationSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    deleteArtistApplicationSuccess(state) {
-      state.artistApplication = null;
+    deleteArtistApplicationSuccess(state, action) {
+      state.artistApplication = state.artistApplication.filter(
+        (application) => application.id !== action.payload.id
+      );
       state.loading = false;
       state.error = null;
     },

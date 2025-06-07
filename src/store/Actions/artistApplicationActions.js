@@ -145,3 +145,46 @@ export const updateArtistApplication =
       );
     }
   };
+
+export const deleteArtistApplication = (applicationId) => async (dispatch) => {
+  dispatch(deleteArtistApplicationStart());
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}artistapplication/${applicationId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteArtistApplicationFailure({
+          error: errorData.message || "Failed to delete artist application.",
+        })
+      );
+      throw new Error(
+        errorData.message ||
+          "An error occurred while deleting artist application"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(deleteArtistApplicationSuccess({ id: data.data.id }));
+  } catch (error) {
+    dispatch(
+      deleteArtistApplicationFailure({
+        error:
+          error.message ||
+          "An error occurred while deleting artist application",
+      })
+    );
+    throw new Error(
+      error.message || "An error occurred while deleting artist application"
+    );
+  }
+};
