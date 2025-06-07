@@ -21,7 +21,7 @@ import { API_BASE_URL } from "../../config";
 export const fetchAllGenres = () => async (dispatch) => {
   dispatch(fetchAllGenresStart());
   try {
-    const response = await fetch(`${API_BASE_URL}genres`, {
+    const response = await fetch(`${API_BASE_URL}genre`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -59,7 +59,7 @@ export const fetchPaginatedGenres =
     dispatch(fetchPaginatedGenresStart());
     try {
       const response = await fetch(
-        `${API_BASE_URL}genres?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
+        `${API_BASE_URL}genre?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
         {
           method: "GET",
           credentials: "include",
@@ -99,3 +99,39 @@ export const fetchPaginatedGenres =
       );
     }
   };
+
+// Create genre
+export const createGenre = (genreData) => async (dispatch) => {
+  dispatch(createGenreStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}genre`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(genreData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        createGenreFailure({
+          error: errorData.message || "Failed to create genre.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while creating genre"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(createGenreSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      createGenreFailure({
+        error: error.message || "An error occurred while creating genre",
+      })
+    );
+  }
+};
