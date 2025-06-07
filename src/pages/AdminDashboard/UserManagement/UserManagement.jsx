@@ -47,6 +47,12 @@ function UserManagement() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // Filter users based on status
+  const filteredUsers = users.filter((user) => {
+    if (statusFilter === "all") return true; // No filter
+    return user.status === (statusFilter === "active" ? 0 : 1); // Active or inactive
+  });
+
   // Change user status
   const changeStatus = (userId) => {
     const user = users.find((user) => user.id === userId);
@@ -142,8 +148,8 @@ function UserManagement() {
             <FaSort className="sort-icon" />
           </div>
         </div>
-        {users.length > 0 ? (
-          users.map((user) => (
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => (
             <div className="table-row" key={user.id}>
               <div className="col name">
                 <div className="user-avatar">
