@@ -1,130 +1,30 @@
 import "./ArtistVerification.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaCheck,
   FaTimes,
   FaSearch,
   FaMusic,
-  FaUser,
   FaEnvelope,
   FaLink,
   FaClock,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchArtistApplication } from "../../../store/Actions/artistApplicationActions";
 
 function ArtistVerification() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all"); // 'all', 'pending', 'approved', 'rejected'
 
-  // Mock data - replace with API calls
-  const [applications, setApplications] = useState([
-    {
-      id: 1,
-      artistName: "DJ GrooveMaster",
-      email: "djgroove@example.com",
-      status: "pending",
-      dateSubmitted: "2023-05-15T10:30:00Z",
-      genres: ["Electronic", "House"],
-      socialLinks: {
-        instagram: "@djgroove",
-        soundcloud: "soundcloud.com/djgroove",
-      },
-      sampleTracks: [
-        "soundcloud.com/djgroove/summer-vibes",
-        "youtube.com/watch?v=djgroove-track",
-      ],
-      bio: "Professional DJ with 5 years of experience playing at clubs and festivals worldwide.",
-    },
-    {
-      id: 2,
-      artistName: "Melody Queen",
-      email: "melody@example.com",
-      status: "pending",
-      dateSubmitted: "2023-05-18T14:45:00Z",
-      genres: ["Pop", "R&B"],
-      socialLinks: {
-        instagram: "@melodyqueen",
-        youtube: "youtube.com/melodyqueen",
-      },
-      sampleTracks: [
-        "youtube.com/watch?v=melody-hit",
-        "spotify.com/track/melody-song",
-      ],
-      bio: "Singer-songwriter creating heartfelt pop and R&B music.",
-    },
-    {
-      id: 3,
-      artistName: "Rock Band",
-      email: "rockband@example.com",
-      status: "approved",
-      dateSubmitted: "2023-05-10T09:15:00Z",
-      dateReviewed: "2023-05-12T16:20:00Z",
-      genres: ["Rock", "Alternative"],
-      socialLinks: {
-        facebook: "facebook.com/rockband",
-        twitter: "@rockband",
-      },
-      sampleTracks: [
-        "bandcamp.com/rockband/album",
-        "soundcloud.com/rockband/track",
-      ],
-      bio: "High-energy rock band touring nationally.",
-    },
-    {
-      id: 4,
-      artistName: "Invalid Artist",
-      email: "invalid@example.com",
-      status: "rejected",
-      dateSubmitted: "2023-05-05T11:20:00Z",
-      dateReviewed: "2023-05-07T10:10:00Z",
-      rejectionReason: "Insufficient evidence of musical work",
-      genres: ["Hip Hop"],
-      socialLinks: {},
-      sampleTracks: [],
-      bio: "",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const artistApplications = useSelector(
+    (state) => state.artistApplication.paginatedArtistApplications
+  );
 
-  // Filter and search applications
-  const filteredApplications = applications.filter((app) => {
-    const matchesSearch =
-      app.artistName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === "all" || app.status === filter;
-    return matchesSearch && matchesFilter;
-  });
-
-  // Handle application review
-  const handleApprove = (id) => {
-    setApplications(
-      applications.map((app) =>
-        app.id === id
-          ? {
-              ...app,
-              status: "approved",
-              dateReviewed: new Date().toISOString(),
-            }
-          : app
-      )
-    );
-  };
-
-  const handleReject = (id) => {
-    const reason = prompt("Please enter rejection reason:");
-    if (reason) {
-      setApplications(
-        applications.map((app) =>
-          app.id === id
-            ? {
-                ...app,
-                status: "rejected",
-                dateReviewed: new Date().toISOString(),
-                rejectionReason: reason,
-              }
-            : app
-        )
-      );
-    }
-  };
+  // Fetch artist applications on component mount
+  useEffect(() => {
+    dispatch(fetchArtistApplication());
+  }, [dispatch]);
 
   // Format date
   const formatDate = (dateString) => {
@@ -165,8 +65,8 @@ function ArtistVerification() {
       </div>
 
       <div className="applications-list">
-        {filteredApplications.length > 0 ? (
-          filteredApplications.map((app) => (
+        {artistApplications.length > 0 ? (
+          artistApplications.map((app) => (
             <div className={`application-card ${app.status}`} key={app.id}>
               <div className="card-header">
                 <div className="artist-info">
@@ -174,13 +74,13 @@ function ArtistVerification() {
                     <FaMusic />
                   </div>
                   <div className="details">
-                    <h3>{app.artistName}</h3>
+                    <h3>{app.stageName}</h3>
                     <div className="meta">
                       <span className="email">
                         <FaEnvelope /> {app.email}
                       </span>
                       <span className="date">
-                        <FaClock /> Submitted: {formatDate(app.dateSubmitted)}
+                        <FaClock /> Submitted: {formatDate(app.submittedAt)}
                       </span>
                       {app.dateReviewed && (
                         <span className="date">
@@ -191,9 +91,9 @@ function ArtistVerification() {
                   </div>
                 </div>
                 <div className="status-badge">
-                  {app.status === "pending" && "Pending Review"}
-                  {app.status === "approved" && "Approved"}
-                  {app.status === "rejected" && "Rejected"}
+                  {app.status === 0 && "Pending Review"}
+                  {app.status === 1 && "Approved"}
+                  {app.status === 2 && "Rejected"}
                 </div>
               </div>
 
@@ -201,7 +101,7 @@ function ArtistVerification() {
                 <div className="section">
                   <h4>Genres</h4>
                   <div className="genres">
-                    {app.genres.map((genre) => (
+                    {app.musicGenres.map((genre) => (
                       <span key={genre} className="genre-tag">
                         {genre}
                       </span>
@@ -211,7 +111,7 @@ function ArtistVerification() {
 
                 <div className="section">
                   <h4>Bio</h4>
-                  <p>{app.bio || "No bio provided"}</p>
+                  <p>{app.artistBio || "No bio provided"}</p>
                 </div>
 
                 <div className="section">
@@ -239,9 +139,9 @@ function ArtistVerification() {
 
                 <div className="section">
                   <h4>Sample Tracks</h4>
-                  {app.sampleTracks.length > 0 ? (
+                  {app.sampleTrackLinks.length > 0 ? (
                     <ul className="sample-tracks">
-                      {app.sampleTracks.map((track, index) => (
+                      {app.sampleTrackLinks.map((track, index) => (
                         <li key={index}>
                           <a
                             href={`https://${track}`}
@@ -258,7 +158,7 @@ function ArtistVerification() {
                   )}
                 </div>
 
-                {app.status === "rejected" && app.rejectionReason && (
+                {app.status === 2 && app.rejectionReason && (
                   <div className="section rejection-reason">
                     <h4>Rejection Reason</h4>
                     <p>{app.rejectionReason}</p>
@@ -266,17 +166,17 @@ function ArtistVerification() {
                 )}
               </div>
 
-              {app.status === "pending" && (
+              {app.status === 0 && (
                 <div className="card-actions">
                   <button
                     className="approve-btn"
-                    onClick={() => handleApprove(app.id)}
+                    onClick={() => console.log(`Approve ${app.id}`)}
                   >
                     <FaCheck /> Approve
                   </button>
                   <button
                     className="reject-btn"
-                    onClick={() => handleReject(app.id)}
+                    onClick={() => console.log(`Reject ${app.id}`)}
                   >
                     <FaTimes /> Reject
                   </button>
