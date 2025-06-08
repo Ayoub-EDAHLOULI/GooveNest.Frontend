@@ -1,71 +1,72 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  artistApplication: null,
+  paginatedArtistApplications: [],
   loading: false,
   error: null,
+  totalApplications: 0,
 };
 
 const artistApplicationSlice = createSlice({
   name: "artistApplication",
   initialState,
   reducers: {
-    // Fetch Artist Application
-    fetchArtistApplicationStart(state) {
+    fetchArtistApplicationsStart(state) {
       state.loading = true;
       state.error = null;
     },
-    fetchArtistApplicationSuccess(state, action) {
-      state.artistApplication = action.payload;
+    fetchArtistApplicationsSuccess(state, action) {
+      state.paginatedArtistApplications = action.payload.applications;
+      state.totalApplications = action.payload.total;
       state.loading = false;
-      state.error = null;
     },
-    fetchArtistApplicationFailure(state, action) {
+    fetchArtistApplicationsFailure(state, action) {
       state.loading = false;
       state.error = action.payload.error;
     },
+    updateArtistApplicationStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
 
-    // Create Artist Application
     createArtistApplicationStart(state) {
       state.loading = true;
       state.error = null;
     },
     createArtistApplicationSuccess(state, action) {
-      state.artistApplication = action.payload;
+      state.paginatedArtistApplications.push(action.payload);
       state.loading = false;
-      state.error = null;
+      state.totalApplications += 1; // Increment total applications count
     },
     createArtistApplicationFailure(state, action) {
       state.loading = false;
       state.error = action.payload.error;
     },
 
-    // Update Artist Application
-    updateArtistApplicationStart(state) {
-      state.loading = true;
-      state.error = null;
-    },
     updateArtistApplicationSuccess(state, action) {
-      state.artistApplication = action.payload;
+      const index = state.paginatedArtistApplications.findIndex(
+        (app) => app.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.paginatedArtistApplications[index] = action.payload;
+      }
       state.loading = false;
-      state.error = null;
     },
     updateArtistApplicationFailure(state, action) {
       state.loading = false;
       state.error = action.payload.error;
     },
 
-    // Delete Artist Application
     deleteArtistApplicationStart(state) {
       state.loading = true;
       state.error = null;
     },
     deleteArtistApplicationSuccess(state, action) {
-      state.artistApplication = state.artistApplication.filter(
-        (application) => application.id !== action.payload.id
-      );
+      state.paginatedArtistApplications =
+        state.paginatedArtistApplications.filter(
+          (app) => app.id !== action.payload.id
+        );
       state.loading = false;
-      state.error = null;
     },
     deleteArtistApplicationFailure(state, action) {
       state.loading = false;
@@ -75,9 +76,9 @@ const artistApplicationSlice = createSlice({
 });
 
 export const {
-  fetchArtistApplicationStart,
-  fetchArtistApplicationSuccess,
-  fetchArtistApplicationFailure,
+  fetchArtistApplicationsStart,
+  fetchArtistApplicationsSuccess,
+  fetchArtistApplicationsFailure,
   createArtistApplicationStart,
   createArtistApplicationSuccess,
   createArtistApplicationFailure,

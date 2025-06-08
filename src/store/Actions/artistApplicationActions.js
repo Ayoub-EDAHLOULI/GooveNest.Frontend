@@ -1,7 +1,7 @@
 import {
-  fetchArtistApplicationStart,
-  fetchArtistApplicationSuccess,
-  fetchArtistApplicationFailure,
+  fetchArtistApplicationsStart,
+  fetchArtistApplicationsSuccess,
+  fetchArtistApplicationsFailure,
   createArtistApplicationStart,
   createArtistApplicationSuccess,
   createArtistApplicationFailure,
@@ -15,12 +15,12 @@ import {
 import { API_BASE_URL } from "../../config";
 
 export const fetchArtistApplication =
-  (page = 1, pageSize = 10) =>
+  (page = 1, pageSize = 10, searchQuery = "") =>
   async (dispatch) => {
-    dispatch(fetchArtistApplicationStart());
+    dispatch(fetchArtistApplicationsStart());
     try {
       const response = await fetch(
-        `${API_BASE_URL}artistapplication?page=${page}&pageSize=${pageSize}`,
+        `${API_BASE_URL}artistapplication?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
         {
           method: "GET",
           credentials: "include",
@@ -33,7 +33,7 @@ export const fetchArtistApplication =
       if (!response.ok) {
         const errorData = await response.json();
         dispatch(
-          fetchArtistApplicationFailure({
+          fetchArtistApplicationsFailure({
             error: errorData.message || "Failed to fetch artist application.",
           })
         );
@@ -44,10 +44,15 @@ export const fetchArtistApplication =
       }
 
       const data = await response.json();
-      dispatch(fetchArtistApplicationSuccess(data.data));
+      dispatch(
+        fetchArtistApplicationsSuccess({
+          applications: data.data.paginatedArtistApplication,
+          total: data.data.totalArtistApplication,
+        })
+      );
     } catch (error) {
       dispatch(
-        fetchArtistApplicationFailure({
+        fetchArtistApplicationsFailure({
           error:
             error.message ||
             "An error occurred while fetching artist application",
