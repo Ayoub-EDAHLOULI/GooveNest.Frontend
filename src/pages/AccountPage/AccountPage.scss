@@ -257,6 +257,54 @@
             min-height: 100px;
             resize: vertical;
           }
+
+          .sample-track-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+
+            input {
+              flex: 1;
+            }
+
+            .add-track-btn {
+              padding: 0.5rem 1rem;
+              background-color: #4caf50;
+              border-radius: var(--border-radius);
+              color: white;
+              border: none;
+              cursor: pointer;
+            }
+          }
+
+          .sample-track-list {
+            list-style: none;
+            padding: 0;
+
+            li {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-top: 4px;
+              background-color: #f0f0f0;
+              color: black;
+              padding: 6px 10px;
+              border-radius: 4px;
+
+              .remove-track-btn {
+                background: none;
+                border: none;
+                color: red;
+                cursor: pointer;
+              }
+            }
+          }
+
+          .error-message {
+            color: var(--color-error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+          }
         }
 
         .genre-tags {

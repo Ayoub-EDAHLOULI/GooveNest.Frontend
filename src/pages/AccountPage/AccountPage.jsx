@@ -1,31 +1,66 @@
 import "./AccountPage.scss";
-import {
-  FaUser,
-  FaMusic,
-  FaFileAlt,
-  FaCheckCircle,
-  FaSpotify,
-} from "react-icons/fa";
-import { useState } from "react";
+import { FaUser, FaMusic, FaCheckCircle } from "react-icons/fa";
+import { useState, useEffect, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllGenres } from "../../store/Actions/genreActions";
+import { createArtistApplication } from "../../store/Actions/artistApplicationActions";
+import { validationArtistApplication } from "../../validations/validations";
+import { ToastContext } from "../../context/ToastContext";
 
 function AccountPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [artistApplication, setArtistApplication] = useState({
     stageName: "",
-    bio: "",
-    genres: [],
-    sampleTracks: "",
-    socialLinks: {
-      instagram: "",
-      twitter: "",
-      youtube: "",
-    },
+    artistBio: "",
+    musicGenres: [],
+    sampleTrackLinks: [],
+    instagramUrl: "",
+    twitterUrl: "",
+    youTubeUrl: "",
+    userId: null,
     termsAccepted: false,
   });
+  const [sampleTrackInput, setSampleTrackInput] = useState("");
   const [isApplicationSubmitted, setIsApplicationSubmitted] = useState(false);
+  const [
+    validationArtistApplicationErrors,
+    setValidationArtistApplicationErrors,
+  ] = useState({});
+
+  const dispatch = useDispatch();
+  const genres = useSelector((state) => state.genre.allGenres || []);
+
+  const { notify } = useContext(ToastContext);
+
+  // Fetch genres on component mount
+  useEffect(() => {
+    dispatch(fetchAllGenres());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setArtistApplication((prev) => ({
+          ...prev,
+          userId: user.id || null,
+        }));
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+      }
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Clear the specific field error when user starts typing
+    setValidationArtistApplicationErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[name];
+      return newErrors;
+    });
 
     if (name.includes("socialLinks.")) {
       const socialField = name.split(".")[1];
@@ -44,27 +79,81 @@ function AccountPage() {
     }
   };
 
-  const handleGenreToggle = (genre) => {
+  const handleGenreToggle = (genreName) => {
     setArtistApplication((prev) => {
-      if (prev.genres.includes(genre)) {
-        return {
-          ...prev,
-          genres: prev.genres.filter((g) => g !== genre),
-        };
-      } else {
-        return {
-          ...prev,
-          genres: [...prev.genres, genre],
-        };
-      }
+      const updatedGenres = prev.musicGenres.includes(genreName)
+        ? prev.musicGenres.filter((g) => g !== genreName)
+        : [...prev.musicGenres, genreName];
+
+      return {
+        ...prev,
+        musicGenres: updatedGenres,
+      };
     });
+
+    // Clear the musicGenres error when user selects a genre
+    setValidationArtistApplicationErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors.musicGenres;
+      return newErrors;
+    });
+  };
+
+  const handleAddSampleTrackLink = () => {
+    if (sampleTrackInput.trim() !== "") {
+      setArtistApplication((prev) => ({
+        ...prev,
+        sampleTrackLinks: [...prev.sampleTrackLinks, sampleTrackInput.trim()],
+      }));
+      setSampleTrackInput("");
+    }
+  };
+
+  const handleRemoveSampleTrackLink = (indexToRemove) => {
+    setArtistApplication((prev) => ({
+      ...prev,
+      sampleTrackLinks: prev.sampleTrackLinks.filter(
+        (_, i) => i !== indexToRemove
+      ),
+    }));
   };
 
   const handleSubmitApplication = (e) => {
     e.preventDefault();
-    console.log("Artist application submitted:", artistApplication);
+
+    // Validate the application form
+    const validationErrors = validationArtistApplication(artistApplication);
+    if (!validationErrors.valid) {
+      setValidationArtistApplicationErrors(validationErrors.errors);
+      return;
+    }
+
     // Here you would typically send the data to your backend
-    setIsApplicationSubmitted(true);
+    dispatch(createArtistApplication(artistApplication))
+      .then(() => {
+        notify("Artist application submitted successfully!", "success");
+        setIsApplicationSubmitted(true);
+        setArtistApplication({
+          stageName: "",
+          artistBio: "",
+          musicGenres: [],
+          sampleTrackLinks: [],
+          instagramUrl: "",
+          twitterUrl: "",
+          youTubeUrl: "",
+          userId: artistApplication.userId, // Keep the userId
+          termsAccepted: false,
+        });
+        setValidationArtistApplicationErrors({});
+      })
+      .catch((error) => {
+        notify(
+          `Failed to submit application: ${error.message || "Unknown error"}`,
+          "error"
+        );
+      });
+
+    // setIsApplicationSubmitted(true);
   };
 
   return (
@@ -229,68 +318,105 @@ function AccountPage() {
                       name="stageName"
                       value={artistApplication.stageName}
                       onChange={handleInputChange}
-                      required
                       placeholder="Your artist name"
                     />
+                    {validationArtistApplicationErrors.stageName && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.stageName}
+                      </span>
+                    )}
                   </div>
 
                   <div className="form-group">
                     <label>Music Genres *</label>
                     <div className="genre-tags">
-                      {[
-                        "Pop",
-                        "Rock",
-                        "Hip Hop",
-                        "Electronic",
-                        "R&B",
-                        "Jazz",
-                        "Classical",
-                        "Country",
-                        "Metal",
-                        "Indie",
-                      ].map((genre) => (
+                      {genres.map((genre) => (
                         <button
                           type="button"
-                          key={genre}
+                          key={genre.id}
                           className={`genre-tag ${
-                            artistApplication.genres.includes(genre)
+                            artistApplication.musicGenres.includes(genre.name)
                               ? "selected"
                               : ""
                           }`}
-                          onClick={() => handleGenreToggle(genre)}
+                          onClick={() => handleGenreToggle(genre.name)}
                         >
-                          {genre}
+                          {genre.name}
                         </button>
                       ))}
                     </div>
+                    {validationArtistApplicationErrors.musicGenres && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.musicGenres}
+                      </span>
+                    )}
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="bio">Artist Bio *</label>
+                    <label htmlFor="artistBio">Artist Bio *</label>
                     <textarea
-                      id="bio"
-                      name="bio"
-                      value={artistApplication.bio}
+                      id="artistBio"
+                      name="artistBio"
+                      value={artistApplication.artistBio}
                       onChange={handleInputChange}
-                      required
                       placeholder="Tell us about yourself and your music"
                       rows="4"
                     />
+                    {validationArtistApplicationErrors.artistBio && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.artistBio}
+                      </span>
+                    )}
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="sampleTracks">
-                      Sample Tracks (Links) *
+                    <label htmlFor="sampleTrackLinks">
+                      Sample Track Links *
                     </label>
-                    <textarea
-                      id="sampleTracks"
-                      name="sampleTracks"
-                      value={artistApplication.sampleTracks}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="Paste links to your music (SoundCloud, YouTube, etc.)"
-                      rows="3"
-                    />
+                    <div className="sample-track-input-wrapper">
+                      <input
+                        type="text"
+                        id="sampleTrackLinks"
+                        name="sampleTrackLinks"
+                        placeholder="Enter track URL"
+                        value={sampleTrackInput}
+                        onChange={(e) => setSampleTrackInput(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="add-track-btn"
+                        onClick={handleAddSampleTrackLink}
+                      >
+                        Add
+                      </button>
+                    </div>
+
+                    {artistApplication.sampleTrackLinks.length > 0 && (
+                      <ul className="sample-track-list">
+                        {artistApplication.sampleTrackLinks.map(
+                          (link, index) => (
+                            <li key={index}>
+                              <span>{link}</span>
+                              <button
+                                type="button"
+                                className="remove-track-btn"
+                                onClick={() =>
+                                  handleRemoveSampleTrackLink(index)
+                                }
+                              >
+                                Remove
+                              </button>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    )}
+
+                    {validationArtistApplicationErrors.sampleTrackLinks && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.sampleTrackLinks}
+                      </span>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -298,24 +424,39 @@ function AccountPage() {
                     <input
                       type="text"
                       placeholder="Instagram"
-                      name="socialLinks.instagram"
-                      value={artistApplication.socialLinks.instagram}
+                      name="instagramUrl"
+                      value={artistApplication.instagramUrl}
                       onChange={handleInputChange}
                     />
+                    {validationArtistApplicationErrors.instagramUrl && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.instagramUrl}
+                      </span>
+                    )}
                     <input
                       type="text"
                       placeholder="Twitter/X"
-                      name="socialLinks.twitter"
-                      value={artistApplication.socialLinks.twitter}
+                      name="twitterUrl"
+                      value={artistApplication.twitterUrl}
                       onChange={handleInputChange}
                     />
+                    {validationArtistApplicationErrors.twitterUrl && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.twitterUrl}
+                      </span>
+                    )}
                     <input
                       type="text"
                       placeholder="YouTube"
-                      name="socialLinks.youtube"
-                      value={artistApplication.socialLinks.youtube}
+                      name="youTubeUrl"
+                      value={artistApplication.youTubeUrl}
                       onChange={handleInputChange}
                     />
+                    {validationArtistApplicationErrors.youTubeUrl && (
+                      <span className="error-message">
+                        {validationArtistApplicationErrors.youTubeUrl}
+                      </span>
+                    )}
                   </div>
 
                   <div className="form-group checkbox-group">

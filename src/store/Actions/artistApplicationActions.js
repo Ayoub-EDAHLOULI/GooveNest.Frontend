@@ -2,6 +2,9 @@ import {
   fetchArtistApplicationsStart,
   fetchArtistApplicationsSuccess,
   fetchArtistApplicationsFailure,
+  fetchArtistApplicationsForUserStart,
+  fetchArtistApplicationsForUserSuccess,
+  fetchArtistApplicationsForUserFailure,
   createArtistApplicationStart,
   createArtistApplicationSuccess,
   createArtistApplicationFailure,
@@ -63,6 +66,52 @@ export const fetchArtistApplication =
       );
     }
   };
+
+export const fetchArtistApplicationsForUser = (UserId) => async (dispatch) => {
+  dispatch(fetchArtistApplicationsForUserStart());
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}artistapplication/isUserSubmitArtistApplication/${UserId}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        fetchArtistApplicationsForUserFailure({
+          error:
+            errorData.message ||
+            "Failed to fetch artist applications for user.",
+        })
+      );
+      throw new Error(
+        errorData.message ||
+          "An error occurred while fetching artist applications for user"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(fetchArtistApplicationsForUserSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      fetchArtistApplicationsForUserFailure({
+        error:
+          error.message ||
+          "An error occurred while fetching artist applications for user",
+      })
+    );
+    throw new Error(
+      error.message ||
+        "An error occurred while fetching artist applications for user"
+    );
+  }
+};
 
 export const createArtistApplication =
   (applicationData) => async (dispatch) => {

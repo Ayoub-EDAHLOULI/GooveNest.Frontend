@@ -24,11 +24,23 @@ const artistApplicationSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
-    updateArtistApplicationStart(state) {
+
+    // Fecth artist applications for a specific user
+    fetchArtistApplicationsForUserStart(state) {
       state.loading = true;
       state.error = null;
     },
+    fetchArtistApplicationsForUserSuccess(state, action) {
+      state.paginatedArtistApplications = action.payload.applications;
+      state.totalApplications = action.payload.total;
+      state.loading = false;
+    },
+    fetchArtistApplicationsForUserFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
 
+    // Create artist application
     createArtistApplicationStart(state) {
       state.loading = true;
       state.error = null;
@@ -43,6 +55,11 @@ const artistApplicationSlice = createSlice({
       state.error = action.payload.error;
     },
 
+    // Update artist application
+    updateArtistApplicationStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
     updateArtistApplicationSuccess(state, action) {
       const index = state.paginatedArtistApplications.findIndex(
         (app) => app.id === action.payload.id
@@ -57,6 +74,7 @@ const artistApplicationSlice = createSlice({
       state.error = action.payload.error;
     },
 
+    // Delete artist application
     deleteArtistApplicationStart(state) {
       state.loading = true;
       state.error = null;
