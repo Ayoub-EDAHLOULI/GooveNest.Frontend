@@ -3,7 +3,10 @@ import { FaUser, FaMusic, FaCheckCircle } from "react-icons/fa";
 import { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllGenres } from "../../store/Actions/genreActions";
-import { createArtistApplication } from "../../store/Actions/artistApplicationActions";
+import {
+  createArtistApplication,
+  fetchArtistApplicationsForUser,
+} from "../../store/Actions/artistApplicationActions";
 import { validationArtistApplication } from "../../validations/validations";
 import { ToastContext } from "../../context/ToastContext";
 
@@ -26,9 +29,13 @@ function AccountPage() {
     validationArtistApplicationErrors,
     setValidationArtistApplicationErrors,
   ] = useState({});
+  const [isUserSubmitted, setIsUserSubmitted] = useState();
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
+  const userArtistApplication = useSelector(
+    (state) => state.artistApplication.userApplication
+  );
 
   const { notify } = useContext(ToastContext);
 
@@ -36,6 +43,24 @@ function AccountPage() {
   useEffect(() => {
     dispatch(fetchAllGenres());
   }, [dispatch]);
+
+  // Fetch artist applications for the current user
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      console.log("Fetching artist applications for user:", user);
+      dispatch(fetchArtistApplicationsForUser(user.id));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (userArtistApplication) {
+      setIsApplicationSubmitted(true);
+    }
+  }, [userArtistApplication]);
+
+  console.log("User Artist Application:", userArtistApplication);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

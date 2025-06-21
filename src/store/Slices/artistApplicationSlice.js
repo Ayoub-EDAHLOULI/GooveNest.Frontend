@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   paginatedArtistApplications: [],
+  userApplication: [],
   loading: false,
   error: null,
   totalApplications: 0,
@@ -31,8 +32,8 @@ const artistApplicationSlice = createSlice({
       state.error = null;
     },
     fetchArtistApplicationsForUserSuccess(state, action) {
-      state.paginatedArtistApplications = action.payload.applications;
-      state.totalApplications = action.payload.total;
+      state.userApplication = action.payload;
+
       state.loading = false;
     },
     fetchArtistApplicationsForUserFailure(state, action) {
@@ -97,6 +98,9 @@ export const {
   fetchArtistApplicationsStart,
   fetchArtistApplicationsSuccess,
   fetchArtistApplicationsFailure,
+  fetchArtistApplicationsForUserStart,
+  fetchArtistApplicationsForUserSuccess,
+  fetchArtistApplicationsForUserFailure,
   createArtistApplicationStart,
   createArtistApplicationSuccess,
   createArtistApplicationFailure,
