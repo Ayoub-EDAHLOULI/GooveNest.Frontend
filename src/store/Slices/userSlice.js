@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   allUsers: [],
   paginatedUsers: [],
+  singleUser: null,
   loading: false,
   error: null,
   totalUsers: 0,
@@ -39,6 +40,21 @@ const userSlice = createSlice({
       state.error = null;
     },
     fetchPaginatedUsersFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
+
+    // Inside userSlice reducers:
+    fetchUserByIdStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchUserByIdSuccess(state, action) {
+      state.singleUser = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    fetchUserByIdFailure(state, action) {
       state.loading = false;
       state.error = action.payload.error;
     },
@@ -112,6 +128,9 @@ export const {
   fetchPaginatedUsersStart,
   fetchPaginatedUsersSuccess,
   fetchPaginatedUsersFailure,
+  fetchUserByIdStart,
+  fetchUserByIdSuccess,
+  fetchUserByIdFailure,
   createUserStart,
   createUserSuccess,
   createUserFailure,

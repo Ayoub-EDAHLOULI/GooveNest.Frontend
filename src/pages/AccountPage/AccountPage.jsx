@@ -9,6 +9,7 @@ import {
 } from "../../store/Actions/artistApplicationActions";
 import { validationArtistApplication } from "../../validations/validations";
 import { ToastContext } from "../../context/ToastContext";
+import { fetchUserById } from "../../store/Actions/userActions";
 
 function AccountPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -29,13 +30,13 @@ function AccountPage() {
     validationArtistApplicationErrors,
     setValidationArtistApplicationErrors,
   ] = useState({});
-  const [isUserSubmitted, setIsUserSubmitted] = useState();
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
   const userArtistApplication = useSelector(
     (state) => state.artistApplication.userApplication
   );
+  const singleUser = useSelector((state) => state.user.singleUser);
 
   const { notify } = useContext(ToastContext);
 
@@ -49,7 +50,6 @@ function AccountPage() {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      console.log("Fetching artist applications for user:", user);
       dispatch(fetchArtistApplicationsForUser(user.id));
     }
   }, [dispatch]);
@@ -60,8 +60,7 @@ function AccountPage() {
     }
   }, [userArtistApplication]);
 
-  console.log("User Artist Application:", userArtistApplication);
-
+  // Fetch user artist application if user is logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -76,6 +75,17 @@ function AccountPage() {
       }
     }
   }, []);
+
+  // Fetch user by ID when component mounts
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      dispatch(fetchUserById(user.id));
+    }
+  }, [dispatch]);
+
+  console.log("Single User:", singleUser);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -177,8 +187,6 @@ function AccountPage() {
           "error"
         );
       });
-
-    // setIsApplicationSubmitted(true);
   };
 
   return (
@@ -222,19 +230,31 @@ function AccountPage() {
             <div className="profile-details">
               <div className="detail-item">
                 <span className="detail-label">Username:</span>
-                <span className="detail-value">music_lover123</span>
+                <span className="detail-value">
+                  {singleUser?.userDetails?.userName}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Email:</span>
-                <span className="detail-value">user@example.com</span>
+                <span className="detail-value">
+                  {singleUser?.userDetails?.email}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Account Created:</span>
-                <span className="detail-value">January 15, 2023</span>
+                <span className="detail-value">
+                  {new Date(
+                    singleUser?.userDetails?.createdAt
+                  ).toLocaleDateString()}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Favorite Genres:</span>
-                <span className="detail-value">Pop, Rock, Electronic</span>
+                <span className="detail-value">
+                  {singleUser?.userDetails?.favoriteGenres
+                    ?.map((genre) => genre.name)
+                    .join(", ") || "None"}
+                </span>
               </div>
             </div>
 
@@ -271,7 +291,7 @@ function AccountPage() {
                 <input
                   type="text"
                   id="username"
-                  defaultValue="music_lover123"
+                  defaultValue={singleUser?.userDetails?.userName || ""}
                 />
               </div>
               <div className="form-group">
@@ -279,7 +299,7 @@ function AccountPage() {
                 <input
                   type="email"
                   id="email"
-                  defaultValue="user@example.com"
+                  defaultValue={singleUser?.userDetails?.email || ""}
                 />
               </div>
               <div className="form-group">

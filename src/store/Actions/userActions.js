@@ -5,6 +5,9 @@ import {
   fetchPaginatedUsersStart,
   fetchPaginatedUsersSuccess,
   fetchPaginatedUsersFailure,
+  fetchUserByIdStart,
+  fetchUserByIdSuccess,
+  fetchUserByIdFailure,
   createUserStart,
   createUserSuccess,
   createUserFailure,
@@ -102,6 +105,40 @@ export const fetchPaginatedUsers =
       );
     }
   };
+
+export const fetchUserById = (userId) => async (dispatch) => {
+  dispatch(fetchUserByIdStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}user/details/${userId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        fetchUserByIdFailure({
+          error: errorData.message || "Failed to fetch user.",
+        })
+      );
+      throw new Error(errorData.message || "An error occurred");
+    }
+
+    const data = await response.json();
+    dispatch(fetchUserByIdSuccess(data.data));
+    return data.data;
+  } catch (error) {
+    dispatch(
+      fetchUserByIdFailure({
+        error: error.message || "An error occurred while fetching user",
+      })
+    );
+    throw error;
+  }
+};
 
 // Create user
 export const createUser = (userData) => async (dispatch) => {

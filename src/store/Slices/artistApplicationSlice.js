@@ -33,7 +33,6 @@ const artistApplicationSlice = createSlice({
     },
     fetchArtistApplicationsForUserSuccess(state, action) {
       state.userApplication = action.payload;
-
       state.loading = false;
     },
     fetchArtistApplicationsForUserFailure(state, action) {
