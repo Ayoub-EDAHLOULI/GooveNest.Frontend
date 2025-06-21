@@ -9,7 +9,7 @@ import {
 } from "../../store/Actions/artistApplicationActions";
 import { validationArtistApplication } from "../../validations/validations";
 import { ToastContext } from "../../context/ToastContext";
-import { fetchUserById } from "../../store/Actions/userActions";
+import { fetchUserById, updateUser } from "../../store/Actions/userActions";
 
 function AccountPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -30,6 +30,11 @@ function AccountPage() {
     validationArtistApplicationErrors,
     setValidationArtistApplicationErrors,
   ] = useState({});
+  const [userSettings, setUserSettings] = useState({
+    userName: "",
+    email: "",
+    password: "",
+  });
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
@@ -85,8 +90,46 @@ function AccountPage() {
     }
   }, [dispatch]);
 
-  console.log("Single User:", singleUser);
+  // Update user settings when singleUser changes
+  useEffect(() => {
+    if (singleUser?.userDetails) {
+      setUserSettings((prev) => ({
+        ...prev,
+        userName: singleUser.userDetails.userName || "",
+        email: singleUser.userDetails.email || "",
+      }));
+    }
+  }, [singleUser]);
 
+  // Handle User Settings Change
+  const handleSettingsChange = (e) => {
+    const { name, value } = e.target;
+    setUserSettings((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle User Settings Submit
+  const handleSettingsSubmit = (e) => {
+    e.preventDefault();
+
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return;
+
+    const user = JSON.parse(storedUser);
+    const userId = user.id;
+
+    dispatch(updateUser(userId, userSettings))
+      .then(() => {
+        notify("User settings updated successfully!", "success");
+      })
+      .catch((error) => {
+        notify(
+          `Failed to update settings: ${error.message || "Unknown error"}`,
+          "error"
+        );
+      });
+  };
+
+  // Handle Input Channge for User Application Form
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -114,6 +157,7 @@ function AccountPage() {
     }
   };
 
+  // Handle genre toggle for artist application
   const handleGenreToggle = (genreName) => {
     setArtistApplication((prev) => {
       const updatedGenres = prev.musicGenres.includes(genreName)
@@ -134,6 +178,7 @@ function AccountPage() {
     });
   };
 
+  // Handle adding a sample track link
   const handleAddSampleTrackLink = () => {
     if (sampleTrackInput.trim() !== "") {
       setArtistApplication((prev) => ({
@@ -144,6 +189,7 @@ function AccountPage() {
     }
   };
 
+  // Handle removing a sample track link
   const handleRemoveSampleTrackLink = (indexToRemove) => {
     setArtistApplication((prev) => ({
       ...prev,
@@ -153,6 +199,7 @@ function AccountPage() {
     }));
   };
 
+  // Handle form submission for artist application
   const handleSubmitApplication = (e) => {
     e.preventDefault();
 
@@ -266,9 +313,12 @@ function AccountPage() {
                   <div className="stat-label">Songs Played</div>
                 </div>
                 <div className="stat-card">
-                  <div className="stat-number">42</div>
+                  <div className="stat-number">
+                    {singleUser?.totalPlaylists || 0}
+                  </div>
                   <div className="stat-label">Playlists</div>
                 </div>
+
                 <div className="stat-card">
                   <div className="stat-number">87</div>
                   <div className="stat-label">Following</div>
@@ -285,13 +335,15 @@ function AccountPage() {
         {activeTab === "settings" && (
           <div className="settings-section">
             <h2>Account Settings</h2>
-            <form className="settings-form">
+            <form className="settings-form" onSubmit={handleSettingsSubmit}>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
                 <input
                   type="text"
                   id="username"
-                  defaultValue={singleUser?.userDetails?.userName || ""}
+                  name="userName"
+                  value={userSettings.userName}
+                  onChange={handleSettingsChange}
                 />
               </div>
               <div className="form-group">
@@ -299,7 +351,9 @@ function AccountPage() {
                 <input
                   type="email"
                   id="email"
-                  defaultValue={singleUser?.userDetails?.email || ""}
+                  name="email"
+                  value={userSettings.email}
+                  onChange={handleSettingsChange}
                 />
               </div>
               <div className="form-group">
@@ -307,7 +361,9 @@ function AccountPage() {
                 <input
                   type="password"
                   id="password"
-                  placeholder="Enter new password"
+                  name="password"
+                  value={userSettings.password}
+                  onChange={handleSettingsChange}
                 />
               </div>
               <div className="form-group">

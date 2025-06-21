@@ -179,10 +179,10 @@ export const createUser = (userData) => async (dispatch) => {
 };
 
 // Update user
-export const updateUser = (userData) => async (dispatch) => {
+export const updateUser = (userId, userData) => async (dispatch) => {
   dispatch(updateUserStart());
   try {
-    const response = await fetch(`${API_BASE_URL}user/${userData.id}`, {
+    const response = await fetch(`${API_BASE_URL}user/${userId}`, {
       method: "PUT",
       credentials: "include",
       headers: {
