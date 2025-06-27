@@ -15,7 +15,10 @@ import {
   createGenre,
   deleteGenre,
 } from "../../../store/Actions/genreActions";
-import { fetchPaginatedArtists } from "../../../store/Actions/artistActions";
+import {
+  fetchPaginatedArtists,
+  deleteArtist,
+} from "../../../store/Actions/artistActions";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateGenrePopup from "./Popups/update/UpdateGenrePopup";
 import { API_IMAGE_URL } from "../../../config";
@@ -27,12 +30,15 @@ function ContentManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [newGenre, setNewGenre] = useState({ name: "" });
   const [updateGenre, setUpdateGenre] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { notify } = useContext(ToastContext);
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
   const artists = useSelector((state) => state.artist.paginatedArtists || []);
+  const totalArtists = useSelector((state) => state.artist.totalArtists || 0);
 
   // Fetch genres on component mount
   useEffect(() => {
@@ -41,8 +47,8 @@ function ContentManagement() {
 
   // Fetch artists on component mount
   useEffect(() => {
-    dispatch(fetchPaginatedArtists(1, 10, ""));
-  }, [dispatch]);
+    dispatch(fetchPaginatedArtists(currentPage, pageSize, searchQuery));
+  }, [dispatch, currentPage, pageSize, searchQuery]);
 
   // Mock data - replace with API calls
   const [tracks, setTracks] = useState([
@@ -146,6 +152,30 @@ function ContentManagement() {
   const filteredGenres = genres.filter((genre) =>
     genre.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Handle artist deletion
+  const handleDeleteArtist = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteArtist(id))
+          .then(() => {
+            notify("Artist deleted successfully", "success");
+          })
+          .catch((error) => {
+            notify(error.message || "Failed to delete artist", "error");
+          });
+      }
+    });
+  };
 
   return (
     <div className="content-management">
@@ -305,10 +335,16 @@ function ContentManagement() {
           <div className="section-header">
             <h2>Manage Artists</h2>
             <div className="filter-controls">
-              <select>
-                <option>All Artists</option>
-                <option>Verified Only</option>
-                <option>Unverified Only</option>
+              <select
+                id="pageSize"
+                value={pageSize}
+                onChange={(e) => setPageSize(Number(e.target.value))}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
               </select>
             </div>
           </div>
@@ -340,7 +376,10 @@ function ContentManagement() {
                     <button className="action-btn edit">
                       <FaEdit />
                     </button>
-                    <button className="action-btn delete">
+                    <button
+                      className="action-btn delete"
+                      onClick={() => handleDeleteArtist(artist.id)}
+                    >
                       <FaTrash />
                     </button>
                   </div>
@@ -349,6 +388,24 @@ function ContentManagement() {
             ) : (
               <div className="no-results">No artists found</div>
             )}
+          </div>
+
+          <div className="pagination">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {Math.ceil(totalArtists / pageSize)}
+            </span>
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={currentPage * pageSize >= totalArtists}
+            >
+              Next
+            </button>
           </div>
         </div>
       )}

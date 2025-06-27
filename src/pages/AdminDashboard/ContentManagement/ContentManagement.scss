@@ -445,6 +445,40 @@
       }
     }
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+
+    button {
+      background-color: var(--color-bg-tertiary);
+      border: 1px solid var(--color-gray-700);
+      color: var(--color-text-primary);
+      border-radius: var(--border-radius);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 36px;
+
+      &:hover:not(:disabled) {
+        background-color: var(--color-gray-700);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.active {
+        background-color: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {
