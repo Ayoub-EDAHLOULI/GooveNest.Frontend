@@ -97,3 +97,39 @@ export const fetchPaginatedArtists =
       throw error;
     }
   };
+
+export const fetchArtistById = (artistId) => async (dispatch) => {
+  dispatch(fetchArtistByIdStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}artist/details/${artistId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        fetchArtistByIdFailure({
+          error: errorData.message || "Failed to fetch artist.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while fetching artist"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(fetchArtistByIdSuccess(data.data));
+    return data.data;
+  } catch (error) {
+    dispatch(
+      fetchArtistByIdFailure({
+        error: error.message || "An error occurred while fetching artist",
+      })
+    );
+    throw error;
+  }
+};
