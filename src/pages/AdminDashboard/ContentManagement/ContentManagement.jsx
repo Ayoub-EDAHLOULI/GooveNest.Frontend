@@ -15,8 +15,10 @@ import {
   createGenre,
   deleteGenre,
 } from "../../../store/Actions/genreActions";
+import { fetchPaginatedArtists } from "../../../store/Actions/artistActions";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateGenrePopup from "./Popups/update/UpdateGenrePopup";
+import { API_IMAGE_URL } from "../../../config";
 
 import Swal from "sweetalert2";
 
@@ -30,10 +32,16 @@ function ContentManagement() {
 
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genre.allGenres || []);
+  const artists = useSelector((state) => state.artist.paginatedArtists || []);
 
   // Fetch genres on component mount
   useEffect(() => {
     dispatch(fetchAllGenres());
+  }, [dispatch]);
+
+  // Fetch artists on component mount
+  useEffect(() => {
+    dispatch(fetchPaginatedArtists(1, 10, ""));
   }, [dispatch]);
 
   // Mock data - replace with API calls
@@ -308,52 +316,39 @@ function ContentManagement() {
           <div className="artists-table">
             <div className="table-header">
               <div className="col name">Artist Name</div>
-              <div className="col tracks">Tracks</div>
-              <div className="col followers">Followers</div>
-              <div className="col status">Status</div>
+              <div className="col bio">Bio</div>
+              <div className="col username">Username</div>
               <div className="col actions">Actions</div>
             </div>
 
-            {/* Sample artist data - replace with real data */}
-            <div className="table-row">
-              <div className="col name">
-                <div className="artist-info">
-                  <div className="avatar">DJ</div>
-                  <span>DJ Cool</span>
+            {artists.length > 0 ? (
+              artists.map((artist) => (
+                <div className="table-row" key={artist.id}>
+                  <div className="col name">
+                    <div className="artist-info">
+                      <img
+                        src={`${API_IMAGE_URL}${artist.profilePictureUrl}`}
+                        alt={artist.name}
+                        className="avatar-img"
+                      />
+                      <span>{artist.name}</span>
+                    </div>
+                  </div>
+                  <div className="col bio">{artist.bio}</div>
+                  <div className="col username">@{artist.userName}</div>
+                  <div className="col actions">
+                    <button className="action-btn edit">
+                      <FaEdit />
+                    </button>
+                    <button className="action-btn delete">
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="col tracks">24</div>
-              <div className="col followers">12,458</div>
-              <div className="col status">
-                <span className="status-badge verified">Verified</span>
-              </div>
-              <div className="col actions">
-                <button className="action-btn edit">
-                  <FaEdit />
-                </button>
-                <button className="action-btn revoke">Revoke</button>
-              </div>
-            </div>
-
-            <div className="table-row">
-              <div className="col name">
-                <div className="artist-info">
-                  <div className="avatar">LU</div>
-                  <span>Luna</span>
-                </div>
-              </div>
-              <div className="col tracks">8</div>
-              <div className="col followers">5,432</div>
-              <div className="col status">
-                <span className="status-badge pending">Pending</span>
-              </div>
-              <div className="col actions">
-                <button className="action-btn edit">
-                  <FaEdit />
-                </button>
-                <button className="action-btn verify">Verify</button>
-              </div>
-            </div>
+              ))
+            ) : (
+              <div className="no-results">No artists found</div>
+            )}
           </div>
         </div>
       )}
