@@ -51,3 +51,49 @@ export const fetchAllArtists = () => async (dispatch) => {
     );
   }
 };
+
+export const fetchPaginatedArtists =
+  (page = 1, pageSize = 10, searchQuery = "") =>
+  async (dispatch) => {
+    dispatch(fetchPaginatedArtistsStart());
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}artist?page=${page}&pageSize=${pageSize}&search=${searchQuery}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        dispatch(
+          fetchPaginatedArtistsFailure({
+            error: errorData.message || "Failed to fetch paginated artists.",
+          })
+        );
+        throw new Error(
+          errorData.message ||
+            "An error occurred while fetching paginated artists"
+        );
+      }
+
+      const data = await response.json();
+      dispatch(
+        fetchPaginatedArtistsSuccess({
+          artistData: data.data.paginatedArtists,
+          total: data.data.totalArtists,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        fetchPaginatedArtistsFailure({
+          error: error.message || "An error occurred while fetching artists",
+        })
+      );
+      throw error;
+    }
+  };
