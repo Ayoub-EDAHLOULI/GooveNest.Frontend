@@ -170,3 +170,37 @@ export const updateArtist = (artistId, artistData) => async (dispatch) => {
     throw error;
   }
 };
+
+export const deleteArtist = (artistId) => async (dispatch) => {
+  dispatch(deleteArtistApplicationStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}artist/${artistId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteArtistApplicationFailure({
+          error: errorData.message || "Failed to delete artist.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while deleting artist"
+      );
+    }
+
+    dispatch(deleteArtistApplicationSuccess(artistId));
+  } catch (error) {
+    dispatch(
+      deleteArtistApplicationFailure({
+        error: error.message || "An error occurred while deleting artist",
+      })
+    );
+    throw error;
+  }
+};
