@@ -133,3 +133,40 @@ export const fetchArtistById = (artistId) => async (dispatch) => {
     throw error;
   }
 };
+
+export const updateArtist = (artistId, artistData) => async (dispatch) => {
+  dispatch(updateArtistApplicationStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}artist/${artistId}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(artistData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        updateArtistApplicationFailure({
+          error: errorData.message || "Failed to update artist.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while updating artist"
+      );
+    }
+
+    const updatedArtist = await response.json();
+    dispatch(updateArtistApplicationSuccess(updatedArtist.data));
+    return updatedArtist.data;
+  } catch (error) {
+    dispatch(
+      updateArtistApplicationFailure({
+        error: error.message || "An error occurred while updating artist",
+      })
+    );
+    throw error;
+  }
+};
