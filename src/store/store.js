@@ -3,6 +3,7 @@ import authReducer from "./Slices/authSlice";
 import genreReducer from "./Slices/genreSlice";
 import userReducer from "./Slices/userSlice";
 import artistApplicationReducer from "./Slices/artistApplicationSlice";
+import artistReducer from "./Slices/artistSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     genre: genreReducer,
     user: userReducer,
     artistApplication: artistApplicationReducer,
+    artist: artistReducer,
   },
 });
 
