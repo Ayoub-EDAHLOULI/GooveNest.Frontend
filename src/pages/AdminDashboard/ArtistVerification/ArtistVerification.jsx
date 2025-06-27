@@ -10,7 +10,11 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchArtistApplication } from "../../../store/Actions/artistApplicationActions";
+import {
+  fetchArtistApplication,
+  updateArtistApplication,
+} from "../../../store/Actions/artistApplicationActions";
+import Swal from "sweetalert2";
 
 function ArtistVerification() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,6 +41,102 @@ function ArtistVerification() {
       minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const confirmApproval = (id) => {
+    Swal.fire({
+      title: "Approve this artist?",
+      text: "Are you sure you want to approve this artist application?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, approve",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var applicationData = {
+          id: id,
+          status: 1, // 1 for approved
+        };
+
+        dispatch(updateArtistApplication(applicationData))
+          .then(() => {
+            Swal.fire({
+              title: "Approved!",
+              text: "The artist application has been approved.",
+              icon: "success",
+            });
+
+            // Fetch updated applications
+            dispatch(fetchArtistApplication());
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "Error!",
+              text:
+                error.message || "Failed to approve the artist application.",
+              icon: "error",
+            });
+          });
+      }
+    });
+  };
+
+  const confirmRejection = (id) => {
+    Swal.fire({
+      title: "Reject this artist?",
+      text: "You can later provide a rejection reason.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Yes, reject",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show a second popup to ask for rejection reason
+        Swal.fire({
+          title: "Rejection Reason",
+          input: "textarea",
+          inputLabel: "Why are you rejecting this artist?",
+          inputPlaceholder: "Type your reason here...",
+          inputAttributes: {
+            "aria-label": "Rejection reason",
+          },
+          showCancelButton: true,
+        }).then((RejectionReason) => {
+          if (RejectionReason.isConfirmed) {
+            const reason = RejectionReason.value || "No reason provided";
+            // You can dispatch rejection here with reason
+
+            var applicationData = {
+              id: id,
+              status: 2, // 2 for rejected
+              rejectionReason: reason,
+            };
+
+            dispatch(updateArtistApplication(applicationData))
+              .then(() => {
+                // Fetch updated applications
+                dispatch(fetchArtistApplication());
+              })
+              .catch((error) => {
+                Swal.fire({
+                  title: "Error!",
+                  text:
+                    error.message || "Failed to reject the artist application.",
+                  icon: "error",
+                });
+              });
+            // Show success message
+            Swal.fire(
+              "Rejected!",
+              "The artist application has been rejected.",
+              "success"
+            );
+          }
+        });
+      }
+    });
   };
 
   return (
@@ -170,13 +270,13 @@ function ArtistVerification() {
                 <div className="card-actions">
                   <button
                     className="approve-btn"
-                    onClick={() => console.log(`Approve ${app.id}`)}
+                    onClick={() => confirmApproval(app.id)}
                   >
                     <FaCheck /> Approve
                   </button>
                   <button
                     className="reject-btn"
-                    onClick={() => console.log(`Reject ${app.id}`)}
+                    onClick={() => confirmRejection(app.id)}
                   >
                     <FaTimes /> Reject
                   </button>
