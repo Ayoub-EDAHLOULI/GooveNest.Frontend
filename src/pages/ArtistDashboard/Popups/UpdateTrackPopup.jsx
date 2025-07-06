@@ -4,12 +4,17 @@ import { useDispatch } from "react-redux";
 import { ToastContext } from "../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
 import { updateTrack } from "../../../store/Actions/trackActions";
+import { fetchArtistById } from "../../../store/Actions/artistActions";
 
 export default function UpdateTrackPopup({ track, onClose }) {
   const [title, setTitle] = useState(track.title);
   const [isPublished, setIsPublished] = useState(track.isPublished);
   const dispatch = useDispatch();
   const { notify } = useContext(ToastContext);
+
+  // Get User ID from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user ? user.id : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +30,14 @@ export default function UpdateTrackPopup({ track, onClose }) {
       isPublished,
     };
 
+    console.log("Updating track:", updatedTrack);
+
     dispatch(updateTrack(updatedTrack))
       .then(() => {
         notify("Track updated successfully", "success");
+
+        dispatch(fetchArtistById(userId));
+
         onClose();
       })
       .catch((error) => {

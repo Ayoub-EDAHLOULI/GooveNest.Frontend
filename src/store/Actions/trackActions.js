@@ -146,8 +146,8 @@ export const updateTrack = (trackData) => async (dispatch) => {
       );
     }
 
-    const data = await response.json();
-    dispatch(updateTrackSuccess(data.data));
+    const updatedTrack = await response.json();
+    dispatch(updateTrackSuccess(updatedTrack.data));
   } catch (error) {
     dispatch(
       updateTrackFailure({

@@ -82,15 +82,13 @@ const trackSlice = createSlice({
       state.error = null;
     },
     updateTrackSuccess(state, action) {
-      const updatedTrackIndex = state.allTracks.findIndex(
-        (track) => track.id === action.payload.id
+      const updatedTrack = action.payload;
+      state.allTracks = state.allTracks.map((track) =>
+        track.id === updatedTrack.id ? updatedTrack : track
       );
-      if (updatedTrackIndex !== -1) {
-        state.allTracks[updatedTrackIndex] = action.payload;
-        if (state.singleTrack?.id === action.payload.id) {
-          state.singleTrack = action.payload; // Update single track if it matches
-        }
-      }
+      state.paginatedTracks = state.paginatedTracks.map((track) =>
+        track.id === updatedTrack.id ? updatedTrack : track
+      );
       state.loading = false;
       state.error = null;
     },
