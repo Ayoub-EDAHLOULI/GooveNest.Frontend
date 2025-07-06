@@ -19,10 +19,13 @@ import {
 } from "../../../store/Actions/artistActions";
 import { API_IMAGE_URL } from "../../../config";
 import { ToastContext } from "../../../context/ToastContext";
+import UpdateTrackPopup from "../Popups/UpdateTrackPopup";
 
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
+  const [showUpdateTrackPopup, setShowUpdateTrackPopup] = useState(false);
   const [newTrack, setNewTrack] = useState({
     title: "",
     genre: "",
@@ -41,40 +44,7 @@ function MainArtistDashboard() {
     totalPlays: 1245789,
   });
 
-  const [tracks, setTracks] = useState([
-    {
-      id: 1,
-      title: "Summer Vibes",
-      plays: 12457,
-      duration: "3:45",
-      uploaded: "2023-05-15",
-      status: "published",
-    },
-    {
-      id: 2,
-      title: "Midnight Groove",
-      plays: 8743,
-      duration: "4:12",
-      uploaded: "2023-04-22",
-      status: "published",
-    },
-    {
-      id: 3,
-      title: "Urban Flow",
-      plays: 15632,
-      duration: "3:28",
-      uploaded: "2023-06-10",
-      status: "published",
-    },
-    {
-      id: 4,
-      title: "New Track (Draft)",
-      plays: 0,
-      duration: "2:56",
-      uploaded: "2023-06-18",
-      status: "draft",
-    },
-  ]);
+  const [tracks, setTracks] = useState(null);
 
   const [albums, setAlbums] = useState([
     {
@@ -342,7 +312,13 @@ function MainArtistDashboard() {
                   </div>
                   <div className="col actions">
                     <button className="action-button edit">
-                      <FaPencilAlt />
+                      <FaPencilAlt
+                        onClick={() => {
+                          console.log("Edit track:", track);
+                          setSelectedTrack(track);
+                          setShowUpdateTrackPopup(true);
+                        }}
+                      />
                     </button>
                     {track.status === "draft" && (
                       <button
@@ -602,6 +578,13 @@ function MainArtistDashboard() {
             </form>
           </div>
         </div>
+      )}
+
+      {showUpdateTrackPopup && (
+        <UpdateTrackPopup
+          track={selectedTrack}
+          onClose={() => setShowUpdateTrackPopup(false)}
+        />
       )}
     </div>
   );
