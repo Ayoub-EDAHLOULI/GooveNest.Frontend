@@ -1,5 +1,5 @@
 import "./MainArtistDashboard.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {
   FaHome,
   FaMusic,
@@ -13,8 +13,12 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchArtistById } from "../../../store/Actions/artistActions";
+import {
+  fetchArtistById,
+  updateArtist,
+} from "../../../store/Actions/artistActions";
 import { API_IMAGE_URL } from "../../../config";
+import { ToastContext } from "../../../context/ToastContext";
 
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -30,6 +34,7 @@ function MainArtistDashboard() {
   const [artistProfile, setArtistProfile] = useState({
     name: "Groove Master",
     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    profilePicture: "https://via.placeholder.com/150",
     profilePictureUrl: "https://via.placeholder.com/150",
     followers: 12458,
     monthlyListeners: 35642,
@@ -91,10 +96,13 @@ function MainArtistDashboard() {
   const dispatch = useDispatch();
   const artist = useSelector((state) => state.artist.singleArtist);
 
+  const { notify } = useContext(ToastContext);
+
   // Ftech artist id from local storage
   const user = localStorage.getItem("user");
   const artistId = user ? JSON.parse(user).id : null;
 
+  // Fetch artist data when component mounts or artistId changes
   useEffect(() => {
     if (artistId) {
       dispatch(fetchArtistById(artistId));
@@ -117,7 +125,22 @@ function MainArtistDashboard() {
     }
   }, [artist]);
 
-  console.log("Artist Data:", artist);
+  // Functions to handle track upload, delete, and publish
+  useEffect(() => {
+    if (artist && artist.tracks) {
+      const mappedTracks = artist.tracks.map((track) => ({
+        id: track.id,
+        title: track.title,
+        plays: 0, // default, or get it from backend if available
+        duration: `${Math.floor(track.durationSec / 60)}:${String(
+          track.durationSec % 60
+        ).padStart(2, "0")}`,
+        uploaded: new Date(track.createdAt).toISOString().split("T")[0],
+        status: track.isPublished ? "published" : "draft", // ✅ this line
+      }));
+      setTracks(mappedTracks);
+    }
+  }, [artist]);
 
   const handleUploadTrack = (e) => {
     e.preventDefault();
@@ -145,6 +168,29 @@ function MainArtistDashboard() {
         track.id === id ? { ...track, status: "published" } : track
       )
     );
+  };
+
+  const handleUpdateArtistProfile = (e) => {
+    e.preventDefault();
+
+    if (!artistId) return;
+
+    const updatedData = {
+      id: artistId,
+      name: artistProfile.name,
+      bio: artistProfile.bio,
+      avatar: artistProfile.profilePicture, // Assuming this is a File object
+    };
+    dispatch(updateArtist(artist.id, updatedData))
+      .then(() => {
+        notify("Profile updated successfully!", "success");
+
+        // Fetch updated artist data
+        dispatch(fetchArtistById(artistId));
+      })
+      .catch((error) => {
+        notify(error.message || "Failed to update profile", "error");
+      });
   };
 
   return (
@@ -412,7 +458,6 @@ function MainArtistDashboard() {
                   rows="4"
                 />
               </div>
-
               <div className="form-group">
                 <label>Profile Image</label>
                 <div className="image-upload">
@@ -423,11 +468,36 @@ function MainArtistDashboard() {
                       className="profile-picture"
                     />
                   </div>
-                  <button className="upload-button">Change Image</button>
+
+                  <label htmlFor="profilePicture" className="upload-button">
+                    Browse Files
+                  </label>
+                  <input
+                    type="file"
+                    id="profilePicture"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) =>
+                      setArtistProfile({
+                        ...artistProfile,
+                        profilePicture: e.target.files[0],
+                      })
+                    }
+                  />
+
+                  <span className="file-name">
+                    {artistProfile.profilePicture instanceof File
+                      ? artistProfile.profilePicture.name
+                      : "No file selected"}
+                  </span>
                 </div>
               </div>
 
-              <button type="submit" className="save-button">
+              <button
+                type="submit"
+                className="save-button"
+                onClick={handleUpdateArtistProfile}
+              >
                 Save Changes
               </button>
             </form>

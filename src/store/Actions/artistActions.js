@@ -136,14 +136,24 @@ export const fetchArtistById = (artistId) => async (dispatch) => {
 
 export const updateArtist = (artistId, artistData) => async (dispatch) => {
   dispatch(updateArtistApplicationStart());
+
   try {
+    console.log("Updating artist with data:", artistData);
+
+    // Créer un FormData
+    const formData = new FormData();
+    formData.append("name", artistData.name);
+    formData.append("bio", artistData.bio);
+
+    // Vérifie si un fichier est présent
+    if (artistData.avatar instanceof File) {
+      formData.append("avatar", artistData.avatar);
+    }
+
     const response = await fetch(`${API_BASE_URL}artist/${artistId}`, {
       method: "PUT",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(artistData),
+      body: formData, // Ne pas définir 'Content-Type' manuellement !
     });
 
     if (!response.ok) {
