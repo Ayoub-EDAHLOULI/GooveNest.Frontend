@@ -416,7 +416,13 @@ function MainArtistDashboard() {
               <div className="form-group">
                 <label>Profile Image</label>
                 <div className="image-upload">
-                  <div className="current-avatar">GM</div>
+                  <div className="current-avatar">
+                    <img
+                      src={`${API_IMAGE_URL}${artistProfile.profilePictureUrl}`}
+                      alt="Profile"
+                      className="profile-picture"
+                    />
+                  </div>
                   <button className="upload-button">Change Image</button>
                 </div>
               </div>
