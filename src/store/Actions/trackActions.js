@@ -84,3 +84,40 @@ export const fetchTrackById = (trackId) => async (dispatch) => {
     );
   }
 };
+
+export const createTrack = (trackData) => async (dispatch) => {
+  dispatch(createTrackStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}track`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trackData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        createTrackFailure({
+          error: errorData.message || "Failed to create track.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while creating track"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(createTrackSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      createTrackFailure({
+        error: error.message || "An error occurred while creating track",
+      })
+    );
+
+    throw error;
+  }
+};
