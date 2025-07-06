@@ -158,3 +158,38 @@ export const updateTrack = (trackData) => async (dispatch) => {
     throw error;
   }
 };
+
+export const deleteTrack = (trackId) => async (dispatch) => {
+  dispatch(deleteTrackStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}track/${trackId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteTrackFailure({
+          error: errorData.message || "Failed to delete track.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while deleting track"
+      );
+    }
+
+    dispatch(deleteTrackSuccess({ id: trackId }));
+  } catch (error) {
+    dispatch(
+      deleteTrackFailure({
+        error: error.message || "An error occurred while deleting track",
+      })
+    );
+
+    throw error;
+  }
+};
