@@ -20,6 +20,8 @@ import {
 import { API_IMAGE_URL } from "../../../config";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateTrackPopup from "../Popups/UpdateTrackPopup";
+import { deleteTrack } from "../../../store/Actions/trackActions";
+import Swal from "sweetalert2";
 
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -129,15 +131,29 @@ function MainArtistDashboard() {
   };
 
   const handleDeleteTrack = (id) => {
-    setTracks(tracks.filter((track) => track.id !== id));
-  };
-
-  const handlePublishTrack = (id) => {
-    setTracks(
-      tracks.map((track) =>
-        track.id === id ? { ...track, status: "published" } : track
-      )
-    );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This track will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Dispatch delete action
+        dispatch(deleteTrack(id))
+          .then(() => {
+            notify("Track deleted successfully", "success");
+            // Fetch updated tracks
+            dispatch(fetchArtistById(artistId));
+          })
+          .catch((error) => {
+            notify(error.message || "Failed to delete track", "error");
+          });
+      }
+    });
   };
 
   const handleUpdateArtistProfile = (e) => {
@@ -318,20 +334,11 @@ function MainArtistDashboard() {
                     <button className="action-button edit">
                       <FaPencilAlt
                         onClick={() => {
-                          console.log("Edit track:", track);
                           setSelectedTrack(track);
                           setShowUpdateTrackPopup(true);
                         }}
                       />
                     </button>
-                    {track.status === "draft" && (
-                      <button
-                        className="action-button publish"
-                        onClick={() => handlePublishTrack(track.id)}
-                      >
-                        Publish
-                      </button>
-                    )}
                     <button
                       className="action-button delete"
                       onClick={() => handleDeleteTrack(track.id)}

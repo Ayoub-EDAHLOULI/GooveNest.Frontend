@@ -30,8 +30,6 @@ export default function UpdateTrackPopup({ track, onClose }) {
       isPublished,
     };
 
-    console.log("Updating track:", updatedTrack);
-
     dispatch(updateTrack(updatedTrack))
       .then(() => {
         notify("Track updated successfully", "success");
