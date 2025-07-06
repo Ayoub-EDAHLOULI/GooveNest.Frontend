@@ -14,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchArtistById } from "../../../store/Actions/artistActions";
+import { API_IMAGE_URL } from "../../../config";
 
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -25,26 +26,11 @@ function MainArtistDashboard() {
     coverArt: null,
   });
 
-  const dispatch = useDispatch();
-  const artist = useSelector((state) => state.artist.singleArtist);
-
-  // Ftech artist id from local storage
-  const user = localStorage.getItem("user");
-  const artistId = user ? JSON.parse(user).id : null;
-
-  useEffect(() => {
-    if (artistId) {
-      dispatch(fetchArtistById(artistId));
-    }
-  }, [dispatch, artistId]);
-
-  console.log("Artist Data:", artist);
-
   // Mock data - replace with API calls
   const [artistProfile, setArtistProfile] = useState({
-    name: "DJ GrooveMaster",
-    bio: "Electronic music producer creating vibes for your soul",
-    genres: ["House", "Techno", "Deep House"],
+    name: "Groove Master",
+    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    profilePictureUrl: "https://via.placeholder.com/150",
     followers: 12458,
     monthlyListeners: 35642,
     totalPlays: 1245789,
@@ -102,6 +88,37 @@ function MainArtistDashboard() {
     },
   ]);
 
+  const dispatch = useDispatch();
+  const artist = useSelector((state) => state.artist.singleArtist);
+
+  // Ftech artist id from local storage
+  const user = localStorage.getItem("user");
+  const artistId = user ? JSON.parse(user).id : null;
+
+  useEffect(() => {
+    if (artistId) {
+      dispatch(fetchArtistById(artistId));
+    }
+  }, [dispatch, artistId]);
+
+  useEffect(() => {
+    if (artist) {
+      setArtistProfile({
+        name: artist.name || "Groove Master",
+        bio:
+          artist.bio ||
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profilePictureUrl:
+          artist.profilePictureUrl || "https://via.placeholder.com/150",
+        followers: artist.followers || 12458,
+        monthlyListeners: artist.monthlyListeners || 35642,
+        totalPlays: artist.totalPlays || 1245789,
+      });
+    }
+  }, [artist]);
+
+  console.log("Artist Data:", artist);
+
   const handleUploadTrack = (e) => {
     e.preventDefault();
     // In a real app, you would upload to your backend here
@@ -135,9 +152,14 @@ function MainArtistDashboard() {
       {/* Sidebar */}
       <div className="sidebar">
         <div className="artist-profile">
-          <div className="avatar">GM</div>
+          <div className="avatar">
+            <img
+              src={`${API_IMAGE_URL}${artistProfile.profilePictureUrl}`}
+              alt={`${artistProfile.name}'s profile`}
+              className="profile-picture"
+            />
+          </div>
           <h3>{artistProfile.name}</h3>
-          <p>{artistProfile.genres.join(", ")}</p>
         </div>
 
         <nav className="nav-menu">
@@ -389,47 +411,6 @@ function MainArtistDashboard() {
                   }
                   rows="4"
                 />
-              </div>
-
-              <div className="form-group">
-                <label>Genres</label>
-                <div className="genres-tags">
-                  {artistProfile.genres.map((genre, index) => (
-                    <span key={index} className="genre-tag">
-                      {genre}
-                      <button
-                        className="remove-genre"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const newGenres = [...artistProfile.genres];
-                          newGenres.splice(index, 1);
-                          setArtistProfile({
-                            ...artistProfile,
-                            genres: newGenres,
-                          });
-                        }}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    type="text"
-                    placeholder="Add genre"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.target.value.trim()) {
-                        setArtistProfile({
-                          ...artistProfile,
-                          genres: [
-                            ...artistProfile.genres,
-                            e.target.value.trim(),
-                          ],
-                        });
-                        e.target.value = "";
-                      }
-                    }}
-                  />
-                </div>
               </div>
 
               <div className="form-group">
