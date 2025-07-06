@@ -85,7 +85,7 @@ export const fetchTrackById = (trackId) => async (dispatch) => {
   }
 };
 
-export const createTrack = (trackData) => async (dispatch) => {
+export const uploadTrack = (trackData) => async (dispatch) => {
   dispatch(createTrackStart());
   try {
     const response = await fetch(`${API_BASE_URL}track`, {

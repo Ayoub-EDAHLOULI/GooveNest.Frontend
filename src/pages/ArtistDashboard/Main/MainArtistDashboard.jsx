@@ -20,6 +20,7 @@ import {
 import { API_IMAGE_URL } from "../../../config";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateTrackPopup from "../Popups/UpdateTrackPopup";
+import UploadTrackPopup from "../Popups/UploadTrackPopup";
 import { deleteTrack } from "../../../store/Actions/trackActions";
 import Swal from "sweetalert2";
 
@@ -28,12 +29,6 @@ function MainArtistDashboard() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [showUpdateTrackPopup, setShowUpdateTrackPopup] = useState(false);
-  const [newTrack, setNewTrack] = useState({
-    title: "",
-    genre: "",
-    file: null,
-    coverArt: null,
-  });
 
   // Mock data - replace with API calls
   const [artistProfile, setArtistProfile] = useState({
@@ -113,22 +108,6 @@ function MainArtistDashboard() {
       setTracks(mappedTracks);
     }
   }, [artist]);
-
-  const handleUploadTrack = (e) => {
-    e.preventDefault();
-    // In a real app, you would upload to your backend here
-    const newTrackObj = {
-      id: tracks.length + 1,
-      title: newTrack.title,
-      plays: 0,
-      duration: "0:00", // Would calculate from actual file
-      uploaded: new Date().toISOString().split("T")[0],
-      status: "draft",
-    };
-    setTracks([...tracks, newTrackObj]);
-    setShowUploadModal(false);
-    setNewTrack({ title: "", genre: "", file: null, coverArt: null });
-  };
 
   const handleDeleteTrack = (id) => {
     Swal.fire({

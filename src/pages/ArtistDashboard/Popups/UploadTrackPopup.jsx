@@ -1,8 +1,8 @@
-import "../Popup.scss";
+import "./Popup.scss";
 import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { uploadTrack } from "../../../../../store/Actions/trackActions";
-import { ToastContext } from "../../../../../context/ToastContext";
+import { uploadTrack } from "../../../store/Actions/trackActions";
+import { ToastContext } from "../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
 
 export default function UploadTrackPopup({ artistId, onClose }) {
