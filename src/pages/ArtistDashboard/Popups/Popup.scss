@@ -90,6 +90,14 @@
       box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
     }
   }
+
+  input[type="file"] {
+    padding: 0.5rem;
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-gray-700);
+    border-radius: var(--border-radius);
+    color: var(--color-text-secondary);
+  }
 }
 
 .popup-actions {

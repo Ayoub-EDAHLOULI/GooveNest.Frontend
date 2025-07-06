@@ -2,6 +2,7 @@ import "./Popup.scss";
 import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { uploadTrack } from "../../../store/Actions/trackActions";
+import { fetchArtistById } from "../../../store/Actions/artistActions";
 import { ToastContext } from "../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
 
@@ -12,6 +13,10 @@ export default function UploadTrackPopup({ artistId, onClose }) {
   const [title, setTitle] = useState("");
   const [audioFile, setAudioFile] = useState(null);
   const [isPublished, setIsPublished] = useState(false);
+
+  // Get User ID from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user ? user.id : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +31,15 @@ export default function UploadTrackPopup({ artistId, onClose }) {
     formData.append("audioFile", audioFile);
     formData.append("artistId", artistId);
     formData.append("trackNumber", 1); // default as you stated
-    formData.append("isPublished", isPublished);
+    formData.append("isPublished", isPublished ? "true" : "false");
 
     dispatch(uploadTrack(formData))
       .then(() => {
         notify("Track uploaded successfully", "success");
         onClose();
+
+        // Refresh artist data after upload
+        dispatch(fetchArtistById(userId));
       })
       .catch((error) => {
         notify(error.message || "Failed to upload track", "error");

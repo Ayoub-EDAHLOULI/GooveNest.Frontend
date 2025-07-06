@@ -60,7 +60,7 @@ const trackSlice = createSlice({
     },
 
     // Create Track
-    createSliceStart(state) {
+    createTrackStart(state) {
       state.loading = true;
       state.error = null;
     },

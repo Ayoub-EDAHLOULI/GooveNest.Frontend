@@ -138,8 +138,6 @@ export const updateArtist = (artistId, artistData) => async (dispatch) => {
   dispatch(updateArtistApplicationStart());
 
   try {
-    console.log("Updating artist with data:", artistData);
-
     // Créer un FormData
     const formData = new FormData();
     formData.append("name", artistData.name);

@@ -310,13 +310,14 @@ function MainArtistDashboard() {
                     </span>
                   </div>
                   <div className="col actions">
-                    <button className="action-button edit">
-                      <FaPencilAlt
-                        onClick={() => {
-                          setSelectedTrack(track);
-                          setShowUpdateTrackPopup(true);
-                        }}
-                      />
+                    <button
+                      className="action-button edit"
+                      onClick={() => {
+                        setSelectedTrack(track);
+                        setShowUpdateTrackPopup(true);
+                      }}
+                    >
+                      <FaPencilAlt />
                     </button>
                     <button
                       className="action-button delete"
@@ -474,7 +475,7 @@ function MainArtistDashboard() {
       {/* Upload Modal */}
       {showUploadModal && (
         <UploadTrackPopup
-          artistId={artistId}
+          artistId={artist.id}
           onClose={() => setShowUploadModal(false)}
         />
       )}

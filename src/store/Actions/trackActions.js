@@ -91,10 +91,7 @@ export const uploadTrack = (trackData) => async (dispatch) => {
     const response = await fetch(`${API_BASE_URL}track`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(trackData),
+      body: trackData,
     });
 
     if (!response.ok) {
