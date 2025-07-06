@@ -28,13 +28,14 @@ export default function UploadTrackPopup({ artistId, onClose }) {
     formData.append("trackNumber", 1); // default as you stated
     formData.append("isPublished", isPublished);
 
-    try {
-      await dispatch(uploadTrack(formData));
-      notify("Track uploaded successfully", "success");
-      onClose();
-    } catch (error) {
-      notify(error.message || "Failed to upload track", "error");
-    }
+    dispatch(uploadTrack(formData))
+      .then(() => {
+        notify("Track uploaded successfully", "success");
+        onClose();
+      })
+      .catch((error) => {
+        notify(error.message || "Failed to upload track", "error");
+      });
   };
 
   return (
