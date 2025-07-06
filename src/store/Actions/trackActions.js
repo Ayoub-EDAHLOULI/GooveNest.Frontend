@@ -121,3 +121,40 @@ export const createTrack = (trackData) => async (dispatch) => {
     throw error;
   }
 };
+
+export const updateTrack = (trackData) => async (dispatch) => {
+  dispatch(updateTrackStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}track/${trackData.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trackData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        updateTrackFailure({
+          error: errorData.message || "Failed to update track.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while updating track"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(updateTrackSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      updateTrackFailure({
+        error: error.message || "An error occurred while updating track",
+      })
+    );
+
+    throw error;
+  }
+};
