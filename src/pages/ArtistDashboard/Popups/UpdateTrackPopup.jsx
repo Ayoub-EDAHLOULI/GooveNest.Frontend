@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 import { ToastContext } from "../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
+import { updateTrack } from "../../../store/Actions/trackActions";
 
 export default function UpdateTrackPopup({ track, onClose }) {
   const [title, setTitle] = useState(track.title);
@@ -24,14 +25,14 @@ export default function UpdateTrackPopup({ track, onClose }) {
       isPublished,
     };
 
-    // dispatch(updateTrack(updatedTrack))
-    //   .then(() => {
-    //     notify("Track updated successfully", "success");
-    //     onClose();
-    //   })
-    //   .catch((error) => {
-    //     notify(error.message || "Failed to update track", "error");
-    //   });
+    dispatch(updateTrack(updatedTrack))
+      .then(() => {
+        notify("Track updated successfully", "success");
+        onClose();
+      })
+      .catch((error) => {
+        notify(error.message || "Failed to update track", "error");
+      });
   };
 
   return (

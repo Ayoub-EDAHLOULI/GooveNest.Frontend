@@ -106,7 +106,7 @@ function MainArtistDashboard() {
           track.durationSec % 60
         ).padStart(2, "0")}`,
         uploaded: new Date(track.createdAt).toISOString().split("T")[0],
-        status: track.isPublished ? "published" : "draft", // ✅ this line
+        isPublished: track.isPublished, // ✅ this line
       }));
       setTracks(mappedTracks);
     }
@@ -306,8 +306,12 @@ function MainArtistDashboard() {
                   <div className="col duration">{track.duration}</div>
                   <div className="col uploaded">{track.uploaded}</div>
                   <div className="col status">
-                    <span className={`status-badge ${track.status}`}>
-                      {track.status}
+                    <span
+                      className={`status-badge ${
+                        track.isPublished ? "published" : "draft"
+                      }`}
+                    >
+                      {track.isPublished ? "Published" : "Draft"}
                     </span>
                   </div>
                   <div className="col actions">
