@@ -494,101 +494,10 @@ function MainArtistDashboard() {
 
       {/* Upload Modal */}
       {showUploadModal && (
-        <div className="modal-overlay">
-          <div className="upload-modal">
-            <div className="modal-header">
-              <h3>Upload New Track</h3>
-              <button
-                className="close-button"
-                onClick={() => setShowUploadModal(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={handleUploadTrack}>
-              <div className="form-group">
-                <label>Track Title</label>
-                <input
-                  type="text"
-                  value={newTrack.title}
-                  onChange={(e) =>
-                    setNewTrack({ ...newTrack, title: e.target.value })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Genre</label>
-                <select
-                  value={newTrack.genre}
-                  onChange={(e) =>
-                    setNewTrack({ ...newTrack, genre: e.target.value })
-                  }
-                  required
-                >
-                  <option value="">Select a genre</option>
-                  <option value="Pop">Pop</option>
-                  <option value="Rock">Rock</option>
-                  <option value="Hip Hop">Hip Hop</option>
-                  <option value="Electronic">Electronic</option>
-                  <option value="R&B">R&B</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Audio File</label>
-                <div className="file-upload">
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    onChange={(e) =>
-                      setNewTrack({ ...newTrack, file: e.target.files[0] })
-                    }
-                    required
-                  />
-                  <button className="browse-button">Browse Files</button>
-                  <span className="file-name">
-                    {newTrack.file ? newTrack.file.name : "No file selected"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Cover Art (Optional)</label>
-                <div className="file-upload">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setNewTrack({ ...newTrack, coverArt: e.target.files[0] })
-                    }
-                  />
-                  <button className="browse-button">Browse Files</button>
-                  <span className="file-name">
-                    {newTrack.coverArt
-                      ? newTrack.coverArt.name
-                      : "No file selected"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={() => setShowUploadModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="upload-button">
-                  Upload Track
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <UploadTrackPopup
+          artistId={artistId}
+          onClose={() => setShowUploadModal(false)}
+        />
       )}
 
       {showUpdateTrackPopup && (
