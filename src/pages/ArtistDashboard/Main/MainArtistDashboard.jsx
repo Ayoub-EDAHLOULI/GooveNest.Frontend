@@ -1,5 +1,5 @@
 import "./MainArtistDashboard.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHome,
   FaMusic,
@@ -12,6 +12,8 @@ import {
   FaPencilAlt,
   FaTrash,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchArtistById } from "../../../store/Actions/artistActions";
 
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -22,6 +24,21 @@ function MainArtistDashboard() {
     file: null,
     coverArt: null,
   });
+
+  const dispatch = useDispatch();
+  const artist = useSelector((state) => state.artist.singleArtist);
+
+  // Ftech artist id from local storage
+  const user = localStorage.getItem("user");
+  const artistId = user ? JSON.parse(user).id : null;
+
+  useEffect(() => {
+    if (artistId) {
+      dispatch(fetchArtistById(artistId));
+    }
+  }, [dispatch, artistId]);
+
+  console.log("Artist Data:", artist);
 
   // Mock data - replace with API calls
   const [artistProfile, setArtistProfile] = useState({

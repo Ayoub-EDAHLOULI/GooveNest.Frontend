@@ -101,7 +101,7 @@ export const fetchPaginatedArtists =
 export const fetchArtistById = (artistId) => async (dispatch) => {
   dispatch(fetchArtistByIdStart());
   try {
-    const response = await fetch(`${API_BASE_URL}artist/details/${artistId}`, {
+    const response = await fetch(`${API_BASE_URL}artist/${artistId}`, {
       method: "GET",
       credentials: "include",
       headers: {
