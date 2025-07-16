@@ -5,6 +5,7 @@ import userReducer from "./Slices/userSlice";
 import artistApplicationReducer from "./Slices/artistApplicationSlice";
 import artistReducer from "./Slices/artistSlice";
 import trackReducer from "./Slices/trackSlice";
+import albumReducer from "./Slices/albumSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     artistApplication: artistApplicationReducer,
     artist: artistReducer,
     track: trackReducer,
+    album: albumReducer,
   },
 });
 
