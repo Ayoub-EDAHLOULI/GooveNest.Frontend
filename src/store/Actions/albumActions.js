@@ -2,6 +2,9 @@ import {
   fetchAlbumsStart,
   fetchAlbumsSuccess,
   fetchAlbumsFailure,
+  fetchAlbumByIdStart,
+  fetchAlbumByIdSuccess,
+  fetchAlbumByIdFailure,
   createAlbumStart,
   createAlbumSuccess,
   createAlbumFailure,
@@ -44,6 +47,40 @@ export const fetchAllAlbums = () => async (dispatch) => {
     dispatch(
       fetchAlbumsFailure({
         error: error.message || "An error occurred while fetching albums",
+      })
+    );
+  }
+};
+
+export const fetchAlbumById = (albumId) => async (dispatch) => {
+  dispatch(fetchAlbumByIdStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}album/${albumId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        fetchAlbumByIdFailure({
+          error: errorData.message || "Failed to fetch album.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while fetching album"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(fetchAlbumByIdSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      fetchAlbumByIdFailure({
+        error: error.message || "An error occurred while fetching album",
       })
     );
   }

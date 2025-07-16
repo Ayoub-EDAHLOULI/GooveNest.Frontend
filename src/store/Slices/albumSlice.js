@@ -4,6 +4,7 @@ const albumSlice = createSlice({
   name: "album",
   initialState: {
     albums: [],
+    album: null,
     loading: false,
     error: null,
   },
@@ -17,6 +18,20 @@ const albumSlice = createSlice({
       state.albums = action.payload;
     },
     fetchAlbumsFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    // Fetch Album by ID
+    fetchAlbumByIdStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchAlbumByIdSuccess(state, action) {
+      state.loading = false;
+      state.album = action.payload;
+    },
+    fetchAlbumByIdFailure(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -76,6 +91,10 @@ export const {
   fetchAlbumsStart,
   fetchAlbumsSuccess,
   fetchAlbumsFailure,
+
+  fetchAlbumByIdStart,
+  fetchAlbumByIdSuccess,
+  fetchAlbumByIdFailure,
 
   createAlbumStart,
   createAlbumSuccess,
