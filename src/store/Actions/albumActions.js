@@ -157,3 +157,38 @@ export const updateAlbum = (albumData) => async (dispatch) => {
     );
   }
 };
+
+// Delete an album
+export const deleteAlbum = (albumId) => async (dispatch) => {
+  dispatch(deleteAlbumStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}album/${albumId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        deleteAlbumFailure({
+          error: errorData.message || "Failed to delete album.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while deleting album"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(deleteAlbumSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      deleteAlbumFailure({
+        error: error.message || "An error occurred while deleting album",
+      })
+    );
+  }
+};
