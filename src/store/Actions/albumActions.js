@@ -85,3 +85,39 @@ export const fetchAlbumById = (albumId) => async (dispatch) => {
     );
   }
 };
+
+// Create a new album
+export const createAlbum = (albumData) => async (dispatch) => {
+  dispatch(createAlbumStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}album/create`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(albumData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        createAlbumFailure({
+          error: errorData.message || "Failed to create album.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while creating album"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(createAlbumSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      createAlbumFailure({
+        error: error.message || "An error occurred while creating album",
+      })
+    );
+  }
+};
