@@ -1,48 +1,44 @@
 import "../Popup.scss";
 import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { uploadTrack } from "../../../../store/Actions/trackActions";
-import { fetchArtistById } from "../../../../store/Actions/artistActions";
-import { ToastContext } from "../../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
+import { ToastContext } from "../../../../context/ToastContext";
+import { fetchArtistById } from "../../../../store/Actions/artistActions";
+import { createAlbum } from "../../../../store/Actions/albumActions";
 
-export default function UploadTrackPopup({ artistId, onClose }) {
+export default function UploadAlbumPopup({ artistId, onClose }) {
   const dispatch = useDispatch();
   const { notify } = useContext(ToastContext);
 
   const [title, setTitle] = useState("");
-  const [audioFile, setAudioFile] = useState(null);
-  const [isPublished, setIsPublished] = useState(false);
+  const [releaseDate, setReleaseDate] = useState("");
+  const [coverFile, setCoverFile] = useState(null);
 
-  // Get User ID from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user ? user.id : null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !audioFile) {
-      notify("Please provide both a title and an audio file.", "error");
+    if (!title.trim() || !releaseDate || !coverFile) {
+      notify("Please fill in all fields including a cover image.", "error");
       return;
     }
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("audioFile", audioFile);
+    formData.append("releaseDate", releaseDate);
     formData.append("artistId", artistId);
-    formData.append("trackNumber", 1); // default as you stated
-    formData.append("isPublished", isPublished ? "true" : "false");
+    formData.append("cover", coverFile);
 
-    dispatch(uploadTrack(formData))
+    dispatch(createAlbum(formData))
       .then(() => {
-        notify("Track uploaded successfully", "success");
+        notify("Album created successfully!", "success");
         onClose();
-
-        // Refresh artist data after upload
         dispatch(fetchArtistById(userId));
       })
       .catch((error) => {
-        notify(error.message || "Failed to upload track", "error");
+        notify(error.message || "Failed to create album.", "error");
       });
   };
 
@@ -50,14 +46,14 @@ export default function UploadTrackPopup({ artistId, onClose }) {
     <div className="popup-overlay">
       <div className="popup-container">
         <div className="popup-header">
-          <h3>Upload New Track</h3>
+          <h3>Create New Album</h3>
           <button className="close-btn" onClick={onClose}>
             <FaTimes />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="popup-form">
-          <label>Track Title</label>
+          <label>Album Title</label>
           <input
             type="text"
             value={title}
@@ -65,26 +61,25 @@ export default function UploadTrackPopup({ artistId, onClose }) {
             required
           />
 
-          <label>Audio File</label>
+          <label>Release Date</label>
           <input
-            type="file"
-            accept="audio/*"
-            onChange={(e) => setAudioFile(e.target.files[0])}
+            type="date"
+            value={releaseDate}
+            onChange={(e) => setReleaseDate(e.target.value)}
             required
           />
 
-          <label>Status</label>
-          <select
-            value={isPublished ? "1" : "0"}
-            onChange={(e) => setIsPublished(e.target.value === "1")}
-          >
-            <option value="1">Published</option>
-            <option value="0">Draft</option>
-          </select>
+          <label>Cover Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+            required
+          />
 
           <div className="popup-actions">
             <button type="submit" className="save-btn">
-              Upload
+              Create Album
             </button>
             <button type="button" className="cancel-btn" onClick={onClose}>
               Cancel

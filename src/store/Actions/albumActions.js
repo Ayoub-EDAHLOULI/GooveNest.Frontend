@@ -130,13 +130,10 @@ export const fetchArtistAlbums = (artistId) => async (dispatch) => {
 export const createAlbum = (albumData) => async (dispatch) => {
   dispatch(createAlbumStart());
   try {
-    const response = await fetch(`${API_BASE_URL}album/create`, {
+    const response = await fetch(`${API_BASE_URL}album`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(albumData),
+      body: albumData,
     });
 
     if (!response.ok) {

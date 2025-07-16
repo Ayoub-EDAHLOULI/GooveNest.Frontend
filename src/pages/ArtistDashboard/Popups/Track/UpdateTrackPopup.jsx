@@ -1,10 +1,10 @@
-import "./Popup.scss";
+import "../Popup.scss";
 import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { ToastContext } from "../../../context/ToastContext";
+import { ToastContext } from "../../../../context/ToastContext";
 import { FaTimes } from "react-icons/fa";
-import { updateTrack } from "../../../store/Actions/trackActions";
-import { fetchArtistById } from "../../../store/Actions/artistActions";
+import { updateTrack } from "../../../../store/Actions/trackActions";
+import { fetchArtistById } from "../../../../store/Actions/artistActions";
 
 export default function UpdateTrackPopup({ track, onClose }) {
   const [title, setTitle] = useState(track.title);

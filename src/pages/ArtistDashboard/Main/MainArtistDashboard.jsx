@@ -19,8 +19,9 @@ import {
 } from "../../../store/Actions/artistActions";
 import { API_IMAGE_URL } from "../../../config";
 import { ToastContext } from "../../../context/ToastContext";
-import UpdateTrackPopup from "../Popups/UpdateTrackPopup";
-import UploadTrackPopup from "../Popups/UploadTrackPopup";
+import UpdateTrackPopup from "../Popups/Track/UpdateTrackPopup";
+import UploadTrackPopup from "../Popups/Track/UploadTrackPopup";
+import UploadAlbumPopup from "../Popups/Album/UploadAlbumPopup";
 import { deleteTrack } from "../../../store/Actions/trackActions";
 import Swal from "sweetalert2";
 
@@ -29,6 +30,7 @@ function MainArtistDashboard() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [showUpdateTrackPopup, setShowUpdateTrackPopup] = useState(false);
+  const [showUploadAlbumPopup, setShowUploadAlbumPopup] = useState(false);
 
   // Mock data - replace with API calls
   const [artistProfile, setArtistProfile] = useState({
@@ -43,22 +45,7 @@ function MainArtistDashboard() {
 
   const [tracks, setTracks] = useState(null);
 
-  const [albums, setAlbums] = useState([
-    {
-      id: 1,
-      title: "Summer Collection",
-      tracks: 8,
-      plays: 45678,
-      released: "2023-05-01",
-    },
-    {
-      id: 2,
-      title: "Midnight Sessions",
-      tracks: 6,
-      plays: 32456,
-      released: "2023-03-15",
-    },
-  ]);
+  const [albums, setAlbums] = useState([]);
 
   const dispatch = useDispatch();
   const artist = useSelector((state) => state.artist.singleArtist);
@@ -89,6 +76,20 @@ function MainArtistDashboard() {
         monthlyListeners: artist.monthlyListeners || 35642,
         totalPlays: artist.totalPlays || 1245789,
       });
+    }
+  }, [artist]);
+
+  useEffect(() => {
+    if (artist && artist.albums) {
+      const mappedAlbums = artist.albums.map((album) => ({
+        id: album.id,
+        title: album.title,
+        released: new Date(album.releaseDate).toISOString().split("T")[0],
+        tracks: album.tracks?.length || 0,
+        plays: 0, // You can replace this if you have real data
+        coverUrl: `${API_IMAGE_URL}${album.coverUrl}`,
+      }));
+      setAlbums(mappedAlbums);
     }
   }, [artist]);
 
@@ -336,7 +337,10 @@ function MainArtistDashboard() {
           <div className="albums-tab">
             <div className="section-header">
               <h2>My Albums</h2>
-              <button className="add-button">
+              <button
+                className="add-button"
+                onClick={() => setShowUploadAlbumPopup(true)}
+              >
                 <FaPlus /> Create Album
               </button>
             </div>
@@ -345,7 +349,11 @@ function MainArtistDashboard() {
               {albums.map((album) => (
                 <div className="album-card" key={album.id}>
                   <div className="album-cover">
-                    <div className="cover-image">A</div>
+                    <img
+                      src={album.coverUrl}
+                      alt={album.title}
+                      className="cover-image"
+                    />
                     <button className="play-button">
                       <FaPlay />
                     </button>
@@ -353,7 +361,7 @@ function MainArtistDashboard() {
                   <div className="album-info">
                     <h3>{album.title}</h3>
                     <p>
-                      {album.tracks} tracks • {album.plays.toLocaleString()}{" "}
+                      {album.tracks} tracks • {album.plays.toLocaleString()}
                       plays
                     </p>
                     <p>Released: {album.released}</p>
@@ -484,6 +492,13 @@ function MainArtistDashboard() {
         <UpdateTrackPopup
           track={selectedTrack}
           onClose={() => setShowUpdateTrackPopup(false)}
+        />
+      )}
+
+      {showUploadAlbumPopup && (
+        <UploadAlbumPopup
+          artistId={artist.id}
+          onClose={() => setShowUploadAlbumPopup(false)}
         />
       )}
     </div>
