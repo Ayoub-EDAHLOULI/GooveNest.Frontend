@@ -121,3 +121,39 @@ export const createAlbum = (albumData) => async (dispatch) => {
     );
   }
 };
+
+// Update an existing album
+export const updateAlbum = (albumData) => async (dispatch) => {
+  dispatch(updateAlbumStart());
+  try {
+    const response = await fetch(`${API_BASE_URL}album/${albumData.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(albumData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      dispatch(
+        updateAlbumFailure({
+          error: errorData.message || "Failed to update album.",
+        })
+      );
+      throw new Error(
+        errorData.message || "An error occurred while updating album"
+      );
+    }
+
+    const data = await response.json();
+    dispatch(updateAlbumSuccess(data.data));
+  } catch (error) {
+    dispatch(
+      updateAlbumFailure({
+        error: error.message || "An error occurred while updating album",
+      })
+    );
+  }
+};
