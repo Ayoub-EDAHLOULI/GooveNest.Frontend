@@ -21,7 +21,9 @@ function Navbar() {
           {/* Logo/Brand */}
           <div className="navbar-brand">
             <FaSpotify className="logo-icon" />
-            <span className="brand-name">GrooveNest</span>
+            <Link to="/" className="brand-name">
+              GrooveNest
+            </Link>
           </div>
 
           {/* Search Bar */}
@@ -41,16 +43,16 @@ function Navbar() {
           {/* Main Navigation */}
           <ul className={`nav-links ${isMenuOpen ? "active" : ""}`}>
             <li>
-              <a href="#">Discover</a>
+              <Link to="/discover">Discover</Link>
             </li>
             <li>
-              <a href="#">Library</a>
+              <Link to="/library">Library</Link>
             </li>
             <li>
-              <a href="#">Playlists</a>
+              <Link to="/playlists">Playlists</Link>
             </li>
             <li>
-              <a href="#">Premium</a>
+              <Link to="/premium">Premium</Link>
             </li>
           </ul>
 
