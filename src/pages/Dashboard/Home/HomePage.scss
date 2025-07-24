@@ -1,13 +1,361 @@
 .home-page {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   background-color: var(--color-bg-main);
   color: var(--color-text-primary);
-  min-height: 100vh;
   font-family: var(--font-primary);
 
   .dashboard-container {
     display: flex;
     flex: 1;
     overflow: hidden;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    background: linear-gradient(
+      var(--color-bg-secondary) 0%,
+      var(--color-bg-main) 100%
+    );
+
+    .welcome-message {
+      margin-bottom: 2rem;
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--color-text-primary);
+        font-family: var(--font-secondary);
+      }
+
+      p {
+        color: var(--color-text-secondary);
+        font-size: 1rem;
+      }
+    }
+
+    .content-section {
+      margin-bottom: 3rem;
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-text-primary);
+        font-family: var(--font-secondary);
+      }
+    }
+
+    /* Recently Played Tracks */
+    .tracks-list {
+      background-color: var(--color-bg-tertiary);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+
+      .track-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid var(--color-gray-700);
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: var(--color-gray-800);
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .track-info {
+          display: flex;
+          align-items: center;
+          flex: 1;
+          min-width: 0;
+
+          .track-cover {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            margin-right: 1rem;
+            object-fit: cover;
+          }
+
+          .track-details {
+            min-width: 0;
+
+            h3 {
+              margin: 0 0 0.25rem;
+              font-size: 1rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            p {
+              margin: 0;
+              color: var(--color-text-secondary);
+              font-size: 0.85rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+
+        .track-meta {
+          display: flex;
+          align-items: center;
+          margin: 0 1.5rem;
+          color: var(--color-text-secondary);
+          font-size: 0.85rem;
+
+          .track-plays {
+            margin-right: 1.5rem;
+          }
+        }
+
+        .track-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          button {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+
+            &:hover {
+              color: var(--color-text-primary);
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            &.play-button {
+              background-color: var(--color-primary);
+              color: white;
+
+              &:hover {
+                background-color: var(--color-primary-dark);
+                transform: scale(1.05);
+              }
+            }
+
+            &.like-button {
+              &:hover {
+                color: var(--color-error);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* Playlist Grid */
+    .playlist-grid,
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+
+      .playlist-item,
+      .album-item {
+        background-color: var(--color-bg-tertiary);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+        }
+
+        .playlist-cover,
+        .album-cover {
+          position: relative;
+          aspect-ratio: 1;
+          background-color: var(--color-gray-700);
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .play-overlay {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+
+        &:hover .play-overlay {
+          opacity: 1;
+        }
+
+        .playlist-info,
+        .album-info {
+          padding: 1rem;
+
+          h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          p {
+            margin: 0 0 0.25rem;
+            color: var(--color-text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .track-count,
+          .release-date {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+          }
+        }
+      }
+    }
+
+    /* Now Playing Bar */
+    .now-playing {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--color-bg-secondary);
+      border-top: 1px solid var(--color-gray-700);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+
+      &.active {
+        transform: translateY(0);
+      }
+
+      .track-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
+        }
+
+        h4 {
+          margin: 0;
+          font-size: 0.9rem;
+        }
+
+        p {
+          margin: 0;
+          color: var(--color-text-secondary);
+          font-size: 0.8rem;
+        }
+      }
+
+      .player-controls {
+        .control-button {
+          background: none;
+          border: none;
+          color: var(--color-text-primary);
+          font-size: 1.2rem;
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+
+          &:hover {
+            background-color: var(--color-bg-tertiary);
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .home-page {
+    .main-content {
+      .playlist-grid,
+      .album-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    .main-content {
+      padding: 1rem;
+
+      .tracks-list {
+        .track-meta {
+          display: none;
+        }
+
+        .track-actions {
+          gap: 0.5rem;
+        }
+      }
+
+      .playlist-grid,
+      .album-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .home-page {
+    .main-content {
+      .playlist-grid,
+      .album-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   }
 }
