@@ -541,36 +541,6 @@
       }
     }
 
-    /* Analytics Tab */
-    .analytics-tab {
-      .analytics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-        gap: 1.5rem;
-
-        .chart-container {
-          background-color: var(--color-bg-tertiary);
-          border-radius: var(--border-radius);
-          padding: 1.5rem;
-
-          h3 {
-            margin: 0 0 1rem;
-            font-size: 1.1rem;
-          }
-
-          .chart-placeholder {
-            height: 250px;
-            background-color: var(--color-gray-700);
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-text-secondary);
-          }
-        }
-      }
-    }
-
     /* Profile Tab */
     .profile-tab {
       .profile-form {

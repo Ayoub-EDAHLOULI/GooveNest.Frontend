@@ -23,6 +23,7 @@ import { ToastContext } from "../../../context/ToastContext";
 import UpdateTrackPopup from "../Popups/Track/UpdateTrackPopup";
 import UploadTrackForAlbumPopup from "../Popups/Track/UploadTrackForAlbumPopup";
 import UploadAlbumPopup from "../Popups/Album/UploadAlbumPopup";
+import UploadTrackPopup from "../Popups/Track/UploadTrackPopup";
 import { deleteTrack } from "../../../store/Actions/trackActions";
 import Swal from "sweetalert2";
 
@@ -217,13 +218,6 @@ function MainArtistDashboard() {
           >
             <FaMusic className="icon" />
             <span>My Albums</span>
-          </button>
-          <button
-            className={`nav-item ${activeTab === "analytics" ? "active" : ""}`}
-            onClick={() => setActiveTab("analytics")}
-          >
-            <FaChartLine className="icon" />
-            <span>Analytics</span>
           </button>
           <button
             className={`nav-item ${activeTab === "profile" ? "active" : ""}`}
@@ -503,38 +497,6 @@ function MainArtistDashboard() {
                 </table>
               </>
             )}
-          </div>
-        )}
-
-        {activeTab === "analytics" && (
-          <div className="analytics-tab">
-            <h2>Analytics</h2>
-            <div className="analytics-grid">
-              <div className="chart-container">
-                <h3>Monthly Plays</h3>
-                <div className="chart-placeholder">
-                  [Chart would display here]
-                </div>
-              </div>
-              <div className="chart-container">
-                <h3>Top Tracks</h3>
-                <div className="chart-placeholder">
-                  [Chart would display here]
-                </div>
-              </div>
-              <div className="chart-container">
-                <h3>Listener Demographics</h3>
-                <div className="chart-placeholder">
-                  [Chart would display here]
-                </div>
-              </div>
-              <div className="chart-container">
-                <h3>Geographic Distribution</h3>
-                <div className="chart-placeholder">
-                  [Chart would display here]
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
