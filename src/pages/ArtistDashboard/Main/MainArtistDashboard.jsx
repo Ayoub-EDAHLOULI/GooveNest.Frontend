@@ -31,6 +31,7 @@ function MainArtistDashboard() {
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [showUpdateTrackPopup, setShowUpdateTrackPopup] = useState(false);
   const [showUploadAlbumPopup, setShowUploadAlbumPopup] = useState(false);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
 
   // Mock data - replace with API calls
   const [artistProfile, setArtistProfile] = useState({
@@ -335,43 +336,134 @@ function MainArtistDashboard() {
 
         {activeTab === "albums" && (
           <div className="albums-tab">
-            <div className="section-header">
-              <h2>My Albums</h2>
-              <button
-                className="add-button"
-                onClick={() => setShowUploadAlbumPopup(true)}
-              >
-                <FaPlus /> Create Album
-              </button>
-            </div>
-
-            <div className="albums-grid">
-              {albums.map((album) => (
-                <div className="album-card" key={album.id}>
-                  <div className="album-cover">
-                    <img
-                      src={album.coverUrl}
-                      alt={album.title}
-                      className="cover-image"
-                    />
-                    <button className="play-button">
-                      <FaPlay />
+            {!selectedAlbum ? (
+              <>
+                <div className="section-header">
+                  <h2>My Albums</h2>
+                  <div className="album-actions">
+                    <button
+                      className="add-button"
+                      onClick={() => setShowUploadAlbumPopup(true)}
+                    >
+                      <FaPlus /> Create Album
                     </button>
                   </div>
-                  <div className="album-info">
-                    <h3>{album.title}</h3>
-                    <p>
-                      {album.tracks} tracks • {album.plays.toLocaleString()}
-                      plays
-                    </p>
-                    <p>Released: {album.released}</p>
-                  </div>
-                  <button className="menu-button">
-                    <FaEllipsisH />
+                </div>
+
+                <div className="albums-grid">
+                  {albums.map((album) => (
+                    <div
+                      className="album-card"
+                      key={album.id}
+                      onClick={() => setSelectedAlbum(album)}
+                    >
+                      <div className="album-cover">
+                        <img
+                          src={album.coverUrl}
+                          alt={album.title}
+                          className="cover-image"
+                        />
+                        <button className="play-button">
+                          <FaPlay />
+                        </button>
+                      </div>
+                      <div className="album-info">
+                        <h3>{album.title}</h3>
+                        <p>
+                          {album.tracks} tracks • {album.plays.toLocaleString()}{" "}
+                          plays
+                        </p>
+                        <p>Released: {album.released}</p>
+                      </div>
+                      <button className="menu-button">
+                        <FaEllipsisH />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="section-header">
+                  <button
+                    className="back-button"
+                    onClick={() => setSelectedAlbum(null)}
+                  >
+                    ← Back to Albums
+                  </button>
+                  <h2>{selectedAlbum.title}</h2>
+                  <button
+                    className="add-button"
+                    onClick={() => setShowUploadModal(true)}
+                  >
+                    <FaPlus /> Add Track
                   </button>
                 </div>
-              ))}
-            </div>
+
+                <div className="tracks-table">
+                  <div className="table-header">
+                    <div className="col title">Title</div>
+                    <div className="col plays">Plays</div>
+                    <div className="col duration">Duration</div>
+                    <div className="col uploaded">Uploaded</div>
+                    <div className="col status">Status</div>
+                    <div className="col actions">Actions</div>
+                  </div>
+
+                  {artist?.albums
+                    ?.find((a) => a.id === selectedAlbum.id)
+                    ?.tracks?.map((track) => (
+                      <div className="table-row" key={track.id}>
+                        <div className="col title">
+                          <button className="play-button">
+                            <FaPlay />
+                          </button>
+                          {track.title}
+                        </div>
+                        <div className="col plays">0</div>
+                        <div className="col duration">
+                          {`${Math.floor(track.durationSec / 60)}:${String(
+                            track.durationSec % 60
+                          ).padStart(2, "0")}`}
+                        </div>
+                        <div className="col uploaded">
+                          {
+                            new Date(track.createdAt)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                        </div>
+                        <div className="col status">
+                          <span
+                            className={`status-badge ${
+                              track.isPublished ? "published" : "draft"
+                            }`}
+                          >
+                            {track.isPublished ? "Published" : "Draft"}
+                          </span>
+                        </div>
+                        <div className="col actions">
+                          <button
+                            className="action-button edit"
+                            onClick={() => {
+                              setSelectedTrack(track);
+                              setShowUpdateTrackPopup(true);
+                            }}
+                          >
+                            <FaPencilAlt />
+                          </button>
+                          <button
+                            className="action-button delete"
+                            onClick={() => handleDeleteTrack(track.id)}
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -499,6 +591,14 @@ function MainArtistDashboard() {
         <UploadAlbumPopup
           artistId={artist.id}
           onClose={() => setShowUploadAlbumPopup(false)}
+        />
+      )}
+
+      {showUploadModal && (
+        <UploadTrackPopup
+          artistId={artist.id}
+          albumId={selectedAlbum?.id}
+          onClose={() => setShowUploadModal(false)}
         />
       )}
     </div>
