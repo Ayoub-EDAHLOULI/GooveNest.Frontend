@@ -13,6 +13,7 @@ import PlaylistDetailsPage from "./pages/Dashboard/PlaylistDetailsPage/PlaylistD
 import PodcastsPage from "./pages/Dashboard/PodcastsPage/PodcastsPage";
 import PodcastDetailsPage from "./pages/Dashboard/PodcastDetailsPage/PodcastDetailsPage";
 import PremiumPage from "./pages/Dashboard/PremiumPage/PremiumPage";
+import LikedSongsPage from "./pages/Dashboard/LikedSongsPage/LikedSongsPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/podcast/:id" element={<PodcastDetailsPage />} />
         <Route path="/premium" element={<PremiumPage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/liked-songs" element={<LikedSongsPage />} />
         {/* Authentication Routes */}
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />

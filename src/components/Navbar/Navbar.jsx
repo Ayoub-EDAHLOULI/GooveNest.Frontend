@@ -59,7 +59,9 @@ function Navbar() {
           {/* User Controls */}
           <div className="user-controls">
             <button className="icon-button">
-              <FaHeart />
+              <Link to="/liked-songs">
+                <FaHeart />
+              </Link>
             </button>
             <button className="icon-button">
               <FaShoppingCart />
