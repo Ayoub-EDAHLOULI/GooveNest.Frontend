@@ -1,6 +1,7 @@
 import "./Sidebar.scss";
 import { FaHome, FaSearch, FaPlus, FaHeart, FaPodcast } from "react-icons/fa";
 import { MdLibraryMusic } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
   // Mock data - replace with your actual data
@@ -24,16 +25,16 @@ function Sidebar() {
         <nav className="main-nav">
           <ul>
             <li>
-              <a href="#" className="active">
+              <Link to="/" className="active">
                 <FaHome className="nav-icon" />
                 <span>Home</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link to="/library">
                 <MdLibraryMusic className="nav-icon" />
                 <span>Your Library</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
@@ -56,10 +57,10 @@ function Sidebar() {
             <ul>
               {playlists.map((playlist) => (
                 <li key={playlist.id}>
-                  <a href="#">
+                  <Link to={`/playlist/${playlist.id}`}>
                     <span className="playlist-name">{playlist.name}</span>
                     <span className="track-count">{playlist.count} songs</span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -75,16 +76,16 @@ function Sidebar() {
           <ul>
             {podcasts.map((podcast) => (
               <li key={podcast.id}>
-                <a href="#">
+                <Link to={`/podcast/${podcast.id}`}>
                   <span className="podcast-name">{podcast.name}</span>
                   <span className="podcast-author">{podcast.author}</span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a href="#" className="browse-link">
+          <Link to="/podcasts" className="browse-link">
             Browse all podcasts
-          </a>
+          </Link>
         </div>
       </div>
     </aside>
