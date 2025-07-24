@@ -11,6 +11,7 @@ import {
   FaPlay,
   FaPencilAlt,
   FaTrash,
+  FaPause,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,7 +21,7 @@ import {
 import { API_IMAGE_URL } from "../../../config";
 import { ToastContext } from "../../../context/ToastContext";
 import UpdateTrackPopup from "../Popups/Track/UpdateTrackPopup";
-import UploadTrackPopup from "../Popups/Track/UploadTrackPopup";
+import UploadTrackForAlbumPopup from "../Popups/Track/UploadTrackForAlbumPopup";
 import UploadAlbumPopup from "../Popups/Album/UploadAlbumPopup";
 import { deleteTrack } from "../../../store/Actions/trackActions";
 import Swal from "sweetalert2";
@@ -28,6 +29,7 @@ import Swal from "sweetalert2";
 function MainArtistDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showUploadForAlbumModal, setShowUploadForAlbumModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [showUpdateTrackPopup, setShowUpdateTrackPopup] = useState(false);
   const [showUploadAlbumPopup, setShowUploadAlbumPopup] = useState(false);
@@ -45,8 +47,9 @@ function MainArtistDashboard() {
   });
 
   const [tracks, setTracks] = useState(null);
-
   const [albums, setAlbums] = useState([]);
+  const [audio, setAudio] = useState(null);
+  const [currentTrackId, setCurrentTrackId] = useState(null);
 
   const dispatch = useDispatch();
   const artist = useSelector((state) => state.artist.singleArtist);
@@ -100,6 +103,7 @@ function MainArtistDashboard() {
       const mappedTracks = artist.tracks.map((track) => ({
         id: track.id,
         title: track.title,
+        trackUrl: `${API_IMAGE_URL}${track.audioUrl}`,
         plays: 0, // default, or get it from backend if available
         duration: `${Math.floor(track.durationSec / 60)}:${String(
           track.durationSec % 60
@@ -158,6 +162,23 @@ function MainArtistDashboard() {
       .catch((error) => {
         notify(error.message || "Failed to update profile", "error");
       });
+  };
+
+  const handlePlayTrack = (trackId, audioUrl) => {
+    // Stop previous audio if playing
+    if (audio) {
+      audio.pause();
+      setAudio(null);
+      if (trackId === currentTrackId) {
+        setCurrentTrackId(null);
+        return;
+      }
+    }
+
+    const newAudio = new Audio(audioUrl);
+    newAudio.play();
+    setAudio(newAudio);
+    setCurrentTrackId(trackId);
   };
 
   return (
@@ -273,7 +294,7 @@ function MainArtistDashboard() {
               <h2>My Tracks</h2>
               <button
                 className="add-button"
-                onClick={() => setShowUploadModal(true)}
+                onClick={() => setShowUploadForAlbumModal(true)}
               >
                 <FaPlus /> Add Track
               </button>
@@ -292,9 +313,13 @@ function MainArtistDashboard() {
               {tracks.map((track) => (
                 <div className="table-row" key={track.id}>
                   <div className="col title">
-                    <button className="play-button">
-                      <FaPlay />
+                    <button
+                      className="play-button"
+                      onClick={() => handlePlayTrack(track.id, track.trackUrl)}
+                    >
+                      {currentTrackId === track.id ? <FaPause /> : <FaPlay />}
                     </button>
+
                     {track.title}
                   </div>
                   <div className="col plays">
@@ -394,46 +419,60 @@ function MainArtistDashboard() {
                   <h2>{selectedAlbum.title}</h2>
                   <button
                     className="add-button"
-                    onClick={() => setShowUploadModal(true)}
+                    onClick={() => setShowUploadForAlbumModal(true)}
                   >
                     <FaPlus /> Add Track
                   </button>
                 </div>
 
-                <div className="tracks-table">
-                  <div className="table-header">
-                    <div className="col title">Title</div>
-                    <div className="col plays">Plays</div>
-                    <div className="col duration">Duration</div>
-                    <div className="col uploaded">Uploaded</div>
-                    <div className="col status">Status</div>
-                    <div className="col actions">Actions</div>
-                  </div>
+                <table className="tracks-table">
+                  <thead>
+                    <tr className="table-header">
+                      <th className="col title">Title</th>
+                      <th className="col plays">Plays</th>
+                      <th className="col duration">Duration</th>
+                      <th className="col uploaded">Uploaded</th>
+                      <th className="col status">Status</th>
+                      <th className="col actions">Actions</th>
+                    </tr>
+                  </thead>
 
                   {artist?.albums
                     ?.find((a) => a.id === selectedAlbum.id)
                     ?.tracks?.map((track) => (
-                      <div className="table-row" key={track.id}>
-                        <div className="col title">
-                          <button className="play-button">
-                            <FaPlay />
+                      <tbody className="table-row" key={track.id}>
+                        <td className="col title">
+                          <button
+                            className="play-button"
+                            onClick={() => {
+                              handlePlayTrack(
+                                track.id,
+                                `${API_IMAGE_URL}${track.audioUrl}`
+                              );
+                            }}
+                          >
+                            {currentTrackId === track.id ? (
+                              <FaPause />
+                            ) : (
+                              <FaPlay />
+                            )}
                           </button>
-                          {track.title}
-                        </div>
-                        <div className="col plays">0</div>
-                        <div className="col duration">
+                          <span className="track-name">{track.title}</span>
+                        </td>
+                        <td className="col plays">0</td>
+                        <td className="col duration">
                           {`${Math.floor(track.durationSec / 60)}:${String(
                             track.durationSec % 60
                           ).padStart(2, "0")}`}
-                        </div>
-                        <div className="col uploaded">
+                        </td>
+                        <td className="col uploaded">
                           {
                             new Date(track.createdAt)
                               .toISOString()
                               .split("T")[0]
                           }
-                        </div>
-                        <div className="col status">
+                        </td>
+                        <td className="col status">
                           <span
                             className={`status-badge ${
                               track.isPublished ? "published" : "draft"
@@ -441,8 +480,8 @@ function MainArtistDashboard() {
                           >
                             {track.isPublished ? "Published" : "Draft"}
                           </span>
-                        </div>
-                        <div className="col actions">
+                        </td>
+                        <td className="col actions">
                           <button
                             className="action-button edit"
                             onClick={() => {
@@ -458,10 +497,10 @@ function MainArtistDashboard() {
                           >
                             <FaTrash />
                           </button>
-                        </div>
-                      </div>
+                        </td>
+                      </tbody>
                     ))}
-                </div>
+                </table>
               </>
             )}
           </div>
@@ -599,6 +638,14 @@ function MainArtistDashboard() {
           artistId={artist.id}
           albumId={selectedAlbum?.id}
           onClose={() => setShowUploadModal(false)}
+        />
+      )}
+
+      {showUploadForAlbumModal && (
+        <UploadTrackForAlbumPopup
+          artistId={artist.id}
+          albumId={selectedAlbum?.id}
+          onClose={() => setShowUploadForAlbumModal(false)}
         />
       )}
     </div>

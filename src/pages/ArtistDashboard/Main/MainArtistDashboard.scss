@@ -150,6 +150,109 @@
       }
     }
 
+    .tracks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+
+      thead {
+        tr {
+          th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            border-bottom: 1px solid var(--color-gray-700);
+          }
+        }
+      }
+
+      .table-row {
+        border-bottom: 1px solid var(--color-gray-700);
+
+        td {
+          padding: 0.75rem;
+          color: var(--color-text-secondary);
+          font-size: 0.9rem;
+        }
+
+        .title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+
+          .track-name {
+            font-size: 1rem;
+          }
+
+          .play-button {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+
+            &:hover {
+              color: var(--color-primary);
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
+
+        .actions {
+          display: flex;
+          gap: 0.5rem;
+
+          .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &.edit {
+              background: none;
+              color: var(--color-primary);
+
+              &:hover {
+                background-color: rgba(29, 185, 84, 0.1);
+              }
+            }
+
+            &.publish {
+              background-color: var(--color-primary);
+              color: white;
+              padding: 0.5rem 1rem;
+              font-size: 0.85rem;
+
+              &:hover {
+                background-color: var(--color-primary-dark);
+              }
+            }
+
+            &.delete {
+              background: none;
+              color: var(--color-error);
+
+              &:hover {
+                background-color: rgba(215, 44, 13, 0.1);
+              }
+            }
+          }
+        }
+      }
+    }
+
     /* Overview Tab */
     .overview-tab {
       .stats-grid {
