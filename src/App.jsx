@@ -8,6 +8,7 @@ import AdminDashboard from "./pages/AdminDashboard/Main/MainAdminDashboard";
 import ArtistDashboard from "./pages/ArtistDashboard/Main/MainArtistDashboard";
 import LibraryPage from "./pages/Dashboard/LibraryPage/LibraryPage";
 import DiscoverPage from "./pages/Dashboard/DiscoverPage/DiscoverPage";
+import PlaylistPage from "./pages/Dashboard/PlaylistPage/PlaylistPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/library" element={<LibraryPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
+        <Route path="/playlists" element={<PlaylistPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
