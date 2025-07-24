@@ -6,12 +6,14 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import AccountPage from "./pages/AccountPage/AccountPage";
 import AdminDashboard from "./pages/AdminDashboard/Main/MainAdminDashboard";
 import ArtistDashboard from "./pages/ArtistDashboard/Main/MainArtistDashboard";
+import LibraryPage from "./pages/Dashboard/LibraryPage/LibraryPage";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/library" element={<LibraryPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
