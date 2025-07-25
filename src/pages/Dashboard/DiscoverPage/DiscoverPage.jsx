@@ -281,7 +281,9 @@ function DiscoverPage() {
           <div className="section">
             <div className="section-header">
               <h2>Featured Playlists</h2>
-              <button className="view-all">View All</button>
+              <Link to="/featured-playlists">
+                <button className="view-all">View All</button>
+              </Link>
             </div>
             <div className="playlist-grid">
               {filteredFeaturedPlaylists.map((playlist) => (
