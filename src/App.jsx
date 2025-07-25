@@ -18,6 +18,7 @@ import CartPage from "./pages/Dashboard/CartPage/CartPage";
 import NewReleasesPage from "./pages/Dashboard/NewReleasesPage/NewReleasesPage";
 import FeaturedPlaylistsPage from "./pages/Dashboard/FeaturedPlaylistsPage/FeaturedPlaylistsPage";
 import RecommendedForYouPage from "./pages/Dashboard/RecommendedForYouPage/RecommendedForYouPage";
+import TrendingArtistsPage from "./pages/Dashboard/TrendingArtistsPage/TrendingArtistsPage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           path="/recommended-for-you"
           element={<RecommendedForYouPage />}
         />
+        <Route path="/trending-artists" element={<TrendingArtistsPage />} />
         {/* Authentication Routes */}
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />

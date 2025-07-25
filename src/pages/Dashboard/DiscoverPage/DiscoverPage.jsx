@@ -351,7 +351,9 @@ function DiscoverPage() {
           <div className="section">
             <div className="section-header">
               <h2>Trending Artists</h2>
-              <button className="view-all">View All</button>
+              <Link to="/trending-artists">
+                <button className="view-all">View All</button>
+              </Link>
             </div>
             <div className="artists-grid">
               {filteredTrendingArtists.map((artist) => (
