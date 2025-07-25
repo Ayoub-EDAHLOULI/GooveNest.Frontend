@@ -48,7 +48,9 @@ function Sidebar() {
             </button>
             <button className="liked-songs">
               <FaHeart className="icon" />
-              <span>Liked Songs</span>
+              <Link to="/liked-songs">
+                <span>Liked Songs</span>
+              </Link>
             </button>
           </div>
 

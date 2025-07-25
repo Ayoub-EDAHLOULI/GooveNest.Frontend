@@ -83,12 +83,15 @@
 
         &.liked-songs {
           background-color: linear-gradient(135deg, #450af5, #c4efd9);
-          color: var(--color-text-primary);
           background: linear-gradient(
             135deg,
             var(--color-accent),
             var(--color-primary-light)
           );
+
+          span {
+            color: var(--color-text-primary);
+          }
 
           &:hover {
             opacity: 0.9;
