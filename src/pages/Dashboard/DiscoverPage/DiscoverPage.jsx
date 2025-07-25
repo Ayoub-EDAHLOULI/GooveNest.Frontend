@@ -310,7 +310,9 @@ function DiscoverPage() {
           <div className="section">
             <div className="section-header">
               <h2>Recommended For You</h2>
-              <button className="view-all">View All</button>
+              <Link to="/recommended-for-you">
+                <button className="view-all">View All</button>
+              </Link>
             </div>
             <div className="tracks-list">
               {filteredRecommendedTracks.map((track) => (
