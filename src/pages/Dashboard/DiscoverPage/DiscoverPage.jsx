@@ -9,6 +9,7 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 import "./DiscoverPage.scss";
+import { Link } from "react-router-dom";
 
 function DiscoverPage() {
   const [newReleases, setNewReleases] = useState([]);
@@ -251,7 +252,9 @@ function DiscoverPage() {
           <div className="section">
             <div className="section-header">
               <h2>New Releases</h2>
-              <button className="view-all">View All</button>
+              <Link to="/new-releases">
+                <button className="view-all">View All</button>
+              </Link>
             </div>
             <div className="album-grid">
               {filteredNewReleases.map((album) => (

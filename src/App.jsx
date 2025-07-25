@@ -14,6 +14,8 @@ import PodcastsPage from "./pages/Dashboard/PodcastsPage/PodcastsPage";
 import PodcastDetailsPage from "./pages/Dashboard/PodcastDetailsPage/PodcastDetailsPage";
 import PremiumPage from "./pages/Dashboard/PremiumPage/PremiumPage";
 import LikedSongsPage from "./pages/Dashboard/LikedSongsPage/LikedSongsPage";
+import CartPage from "./pages/Dashboard/CartPage/CartPage";
+import NewReleasesPage from "./pages/Dashboard/NewReleasesPage/NewReleasesPage";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         <Route path="/premium" element={<PremiumPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/liked-songs" element={<LikedSongsPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/new-releases" element={<NewReleasesPage />} />
         {/* Authentication Routes */}
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />

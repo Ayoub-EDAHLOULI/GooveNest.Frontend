@@ -64,7 +64,9 @@ function Navbar() {
               </Link>
             </button>
             <button className="icon-button">
-              <FaShoppingCart />
+              <Link to="/cart">
+                <FaShoppingCart />
+              </Link>
             </button>
             <Link to="/account" className="user-button">
               <FaUserCircle className="user-icon" />
